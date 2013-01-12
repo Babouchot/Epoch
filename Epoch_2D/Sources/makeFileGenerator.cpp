@@ -49,7 +49,7 @@ int main(int argc, char** args){
         libLinking=*new string(args[1]);
     }
 
-    FILE* file=popen("g++ -MM *.cpp", "r");
+    FILE* file=popen("g++ -MM */*.cpp", "r");
     FILE* makefile=fopen("makefile", "w+");
     FILE* temp=fopen("temp", "w+");
     vector<string*> targets;
@@ -108,6 +108,10 @@ int main(int argc, char** args){
         fputs(" ",makefile);
     }
 
+    //Addional commands
+    fputs("\n\tmkdir Build", makefile);
+    fputs("\n\tmv *.o *.exe Build", makefile);
+
     fclose(temp);
     temp=fopen("temp","r");
 
@@ -116,7 +120,7 @@ int main(int argc, char** args){
         fputs(actualLine,makefile);
     }
     //Add the clean rule
-    fputs("\n\nclean : \n\trm *.o *.exe\0", makefile);
+    fputs("\n\nclean : \n\trm *.o *.exe */*.o */*.exe\0", makefile);
 
     fclose(temp);
     remove("temp");
