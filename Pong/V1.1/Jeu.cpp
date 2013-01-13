@@ -243,10 +243,10 @@ bool Jeu::clavier(unsigned int k)
             balle->setDirVitesse(1.0,0.0);
             balle->setVitesse(10.0);
             return true;
-        case SDLK_UP:
+        case SDLK_DOWN:
             barre->setPos(barre->getX(), barre->getY()  + SDL_GetTicks()/1000);
             return true;
-        case SDLK_DOWN:
+        case SDLK_UP:
             barre->setPos(barre->getX(), barre->getY()  - SDL_GetTicks()/1000);
             return true;
         default:
