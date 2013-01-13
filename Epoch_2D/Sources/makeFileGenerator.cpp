@@ -109,7 +109,7 @@ int main(int argc, char** args){
     }
 
     //Addional commands
-    fputs("\n\tmkdir Build", makefile);
+    fputs("\n\t[ -e \"Build\" ] || mkdir \"Build\"", makefile);
     fputs("\n\tmv *.o *.exe Build", makefile);
 
     fclose(temp);
