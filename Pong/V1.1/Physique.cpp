@@ -42,7 +42,6 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 
 		if(objets[i]->getType()==BARRE)
 		{
-			std::cout << objets[i]->getY() << "/" << WIDTH << std::endl;
 			if(objets[i]->getY() + LARG_BARRE > HEIGHT)
 			{
 				objets[i]->setPos(oldx,oldy);

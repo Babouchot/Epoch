@@ -227,7 +227,14 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
-    ennemi->setPos(WIDTH - 10 -  HAUT_BARRE/2 , balle->getY() - LARG_BARRE/2 );
+    if(balle->getY() <= HEIGHT - LARG_BARRE)
+        if(balle->getY() + SDL_GetTicks()/1000 <= HEIGHT)
+            ennemi->setPos(ennemi->getX() , balle->getY() + SDL_GetTicks()/1000);
+        else
+            ennemi->setPos(ennemi->getX() , balle->getY() + LARG_BARRE/2);
+    else
+        ennemi->setPos(ennemi->getX() , HEIGHT - LARG_BARRE);
+    
     Physique::updateObjets(objets);
 }
 
@@ -245,7 +252,10 @@ bool Jeu::clavier(unsigned int k)
             balle->setVitesse(3.0);
             return true;
         case SDLK_DOWN:
-            barre->setPos(barre->getX(), barre->getY()  + SDL_GetTicks()/1000);
+            if(barre->getY() + LARG_BARRE + SDL_GetTicks()/1000 <= HEIGHT)
+                barre->setPos(barre->getX(), barre->getY() + SDL_GetTicks()/1000);
+            else
+                barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
             return true;
         case SDLK_UP:
             barre->setPos(barre->getX(), barre->getY()  - SDL_GetTicks()/1000);
