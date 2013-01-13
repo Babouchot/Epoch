@@ -75,7 +75,7 @@ int main(int argc, char** args){
                     fputs(compilCPP.c_str(), temp);
                 }
                 targets.push_back(new string(target));
-                compilCPP= "\n\tg++ -c "+extractCPP(actualLine)+"\n";
+                compilCPP= "\n\t-g++ -c "+extractCPP(actualLine)+"\n";
                 fputs("\n\n\0",temp);
             }
             delete sTarget;
@@ -97,7 +97,7 @@ int main(int argc, char** args){
         fputs(" ",makefile);
     }
     //Write the compilation command right below it
-    fputs("\n\tg++", makefile);
+    fputs("\n\t-g++", makefile);
     if(argc>1){
         fputs(" -l", makefile);
         fputs(libLinking.c_str(), makefile);
@@ -109,8 +109,8 @@ int main(int argc, char** args){
     }
 
     //Addional commands
-    fputs("\n\t[ -e \"Build\" ] || mkdir \"Build\"", makefile);
-    fputs("\n\tmv *.o *.exe Build", makefile);
+    fputs("\n\t-[ -e \"Build\" ] || mkdir \"Build\"", makefile);
+    fputs("\n\t-mv *.o *.exe Build", makefile);
 
     fclose(temp);
     temp=fopen("temp","r");
@@ -120,7 +120,7 @@ int main(int argc, char** args){
         fputs(actualLine,makefile);
     }
     //Add the clean rule
-    fputs("\n\nclean : \n\trm *.o *.exe */*.o */*.exe\0", makefile);
+    fputs("\n\nclean : \n\t-rm *.o *.exe */*.o */*.exe\0", makefile);
 
     fclose(temp);
     remove("temp");

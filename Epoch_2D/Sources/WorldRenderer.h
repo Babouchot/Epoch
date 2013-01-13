@@ -1,11 +1,13 @@
 #ifndef WORLD_RENDERER_H
 #define WORLD_RENDERER_H
 
-#include "Renderer.h"
+#include <string>
+
+using namespace std;
 
 //The world renderer class
 //responsible for renderering the wolrd setting
-class WorldRenderer : public Renderer{
+class WorldRenderer {
 
     private :
 
@@ -17,7 +19,7 @@ class WorldRenderer : public Renderer{
 
         WorldRenderer();
         WorldRenderer(string backgound, string ground, string sky);
-        virtual void render();
+        void render();
         ~WorldRenderer();
 };
 

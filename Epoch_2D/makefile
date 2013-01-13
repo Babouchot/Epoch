@@ -5,58 +5,60 @@ ALL = Run.exe
 
 
 Run.exe : BasicRenderer.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
-	g++ -lBox2D -o Run.exe BasicRenderer.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
+	-g++ -o Run.exe BasicRenderer.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
+	-[ -e "Build" ] || mkdir "Build"
+	-mv *.o *.exe Build
 
-BasicRenderer.o: BasicRenderer.cpp BasicRenderer.h Renderer.h  ObjectData.h
+BasicRenderer.o: Sources/BasicRenderer.cpp Sources/BasicRenderer.h  Sources/Renderer.h Sources/ObjectData.h
 
-	g++ -c  BasicRenderer.cpp 
-
-
-ContactListener.o: ContactListener.cpp ContactListener.h
-
-	g++ -c  ContactListener.cpp 
+	-g++ -c  Sources/BasicRenderer.cpp 
 
 
-DeadObject.o: DeadObject.cpp DeadObject.h Object.h Renderer.h  ObjectData.h LivingObject.h
+ContactListener.o: Sources/ContactListener.cpp Sources/ContactListener.h
 
-	g++ -c  DeadObject.cpp 
-
-
-LivingObject.o: LivingObject.cpp LivingObject.h Object.h Renderer.h  ObjectData.h
-
-	g++ -c  LivingObject.cpp 
+	-g++ -c  Sources/ContactListener.cpp 
 
 
-Main.o: Main.cpp
+DeadObject.o: Sources/DeadObject.cpp Sources/DeadObject.h  Sources/Object.h Sources/Renderer.h Sources/ObjectData.h  Sources/LivingObject.h
 
-	g++ -c  Main.cpp
-
-
-
-Object.o: Object.cpp Object.h Renderer.h ObjectData.h
-
-	g++ -c  Object.cpp 
+	-g++ -c  Sources/DeadObject.cpp 
 
 
-Renderer.o: Renderer.cpp Renderer.h ObjectData.h
+LivingObject.o: Sources/LivingObject.cpp Sources/LivingObject.h  Sources/Object.h Sources/Renderer.h Sources/ObjectData.h
 
-	g++ -c  Renderer.cpp 
-
-
-World.o: World.cpp World.h Object.h Renderer.h ObjectData.h  LivingObject.h DeadObject.h WorldRenderer.h
-
-	g++ -c  World.cpp 
+	-g++ -c  Sources/LivingObject.cpp 
 
 
-WorldLoader.o: WorldLoader.cpp WorldLoader.h
+Main.o: Sources/Main.cpp
 
-	g++ -c  WorldLoader.cpp 
+	-g++ -c  Sources/Main.cpp
 
 
-WorldRenderer.o: WorldRenderer.cpp WorldRenderer.h Renderer.h  ObjectData.h
 
-	g++ -c  WorldRenderer.cpp 
+Object.o: Sources/Object.cpp Sources/Object.h Sources/Renderer.h  Sources/ObjectData.h
+
+	-g++ -c  Sources/Object.cpp 
+
+
+Renderer.o: Sources/Renderer.cpp Sources/Renderer.h Sources/ObjectData.h  Sources/BasicRenderer.h
+
+	-g++ -c  Sources/Renderer.cpp 
+
+
+World.o: Sources/World.cpp Sources/World.h Sources/Object.h  Sources/Renderer.h Sources/ObjectData.h Sources/LivingObject.h  Sources/DeadObject.h Sources/WorldRenderer.h
+
+	-g++ -c  Sources/World.cpp 
+
+
+WorldLoader.o: Sources/WorldLoader.cpp Sources/WorldLoader.h
+
+	-g++ -c  Sources/WorldLoader.cpp 
+
+
+WorldRenderer.o: Sources/WorldRenderer.cpp Sources/WorldRenderer.h
+
+	-g++ -c  Sources/WorldRenderer.cpp 
 
 
 clean : 
-	rm *.o *.exe
+	-rm *.o *.exe */*.o */*.exe

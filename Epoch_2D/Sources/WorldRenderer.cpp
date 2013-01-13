@@ -4,7 +4,10 @@ WorldRenderer::WorldRenderer(){
 
 }
 
-WorldRenderer::WorldRenderer(string backgound, string ground, string sky){
+WorldRenderer::WorldRenderer(string backgound, string ground, string sky) : 
+                            _backgroundSpriteName(backgound), 
+                            _groundSpriteName(ground),
+                            _skySpriteName(sky) {
 
 }
 

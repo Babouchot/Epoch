@@ -10,12 +10,13 @@ class BasicRenderer : public Renderer {
 
     private :
         //used to retrieve/load the sprite
-        //supposed to be the ObjectTye string, if a such thing is possible
+        //supposed to be the ObjectType string, if a such thing is possible
         string _spriteName;
+        virtual Renderer* createRenderer(b2Body* body);
 
     public:
 
-        BasicRenderer(ObjectType type, string sprite);
+        BasicRenderer(ObjectType type, b2Body* body=NULL);
         virtual void render();
         ~BasicRenderer();
 };
