@@ -25,9 +25,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+#ifdef __APPLE__&__MACH__
+#include <OpenGL/glut.h>
+#elif
+#include <GL/glut.h>
+#endif
 
 #include <math.h>
-#include <GL/glut.h>
 #include <vector>
 
 #include "Objet.h"

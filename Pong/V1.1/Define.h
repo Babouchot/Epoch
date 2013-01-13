@@ -24,8 +24,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <SDL.h>
 #include <iostream>
 #include <fstream>
+
+
+#ifdef __APPLE__&__MACH__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#elif
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
 
 const unsigned int MAX_BALLES=50;
 const int WIDTH=800;

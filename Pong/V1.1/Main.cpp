@@ -98,12 +98,6 @@ int main(int argc, char **argv)
         //Pour le calcul de fps
         fps++;
         now = SDL_GetTicks()/1000;
-        if(now!=last)
-        {
-            cout << "FPS : " << fps/(now-last) << endl;
-            last = now;
-            fps = 0;
-        }
     }
 
     SDL_Quit();

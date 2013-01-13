@@ -26,7 +26,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
     int nobjets = objets.size();
 
 	for(i=0;i<nobjets;i++)
-		{
+	{
 		//Sauvegarde de l'ancienne position
 		oldx = objets[i]->getX();
 		oldy = objets[i]->getY();
@@ -40,8 +40,17 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 		//Est-ce qu'on a une collision
 		res = collisionObjetZone(objets, i);
 
-		if(res>=0)
+		if(objets[i]->getType()==BARRE)
+		{
+			std::cout << objets[i]->getY() << "/" << WIDTH << std::endl;
+			if(objets[i]->getY() + LARG_BARRE > HEIGHT)
 			{
+				objets[i]->setPos(oldx,oldy);
+			}
+		}
+
+		if(res>=0)
+		{
 			//Si on a une collision, on remet l'ancienne position
 			objets[i]->setPos(oldx,oldy);
 		
@@ -76,7 +85,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				if(objets[res]->getType()!=CERCLE)
 					{
 					objets[i]->setDirVitesse(newvx,newvy);
-                    objets[i]->setVitesse(1);
+                    objets[i]->setVitesse(3.0);
 					}
 				else //Sinon on ajoute la direction (newx, newy)
 					{
@@ -93,17 +102,16 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				//Si l'objet i n'est pas un cercle, on prend la direction (newx, newy)
 				//et met la vitesse à 1
 				if(objets[res]->getType()!=CERCLE)
-					{
+				{
 					objets[res]->setDirVitesse(newvx,newvy);
-                    objets[res]->setVitesse(1);
-					}
+                	objets[res]->setVitesse(3.0);
+				}
 				else    //Sinon on ajoute la direction (newx, newy)
-					{
-					objets[res]->setDirVitesse(objets[res]->getVX()+newvx,
-							objets[res]->getVY()+newvy);
-					}
+				{
+					objets[res]->setDirVitesse(objets[res]->getVX()+newvx, objets[res]->getVY()+newvy);
 				}
 			}
+		}
 
 		//Ajouter dans les zones
 		ajouterObjetDansZones(objets, i);
@@ -248,9 +256,9 @@ inline int Physique::recupereZoneColonne(double x)
 	const int PIXPARCOL = WIDTH/QUADCOL;
 	int res = (int) (x/PIXPARCOL);
 	if(res>=QUADCOL)
-		{
+	{
 		return QUADCOL-1;
-		}
+	}
 	return res;
 }
 
@@ -259,9 +267,9 @@ inline int Physique::recupereZoneLigne(double y)
 	const int PIXPARLIGNE = WIDTH/QUADLIGNE;
 	int res = (int) y/PIXPARLIGNE;
 	if(res>=QUADLIGNE)
-		{
+	{
 		return QUADLIGNE-1;
-		}
+	}
 	return res;
 }
 
@@ -382,12 +390,12 @@ int Physique::collisionObjetZone(std::vector<Objet*> &objets, int idx)
 	
 	//Si c'est un cercle, on recupere son centre
 	if(objets[idx]->getType()==CERCLE)
-		{
+	{
 		cx1 = x1+w1/2;
 		cy1 = y1+h1/2;
 		cr1 = w1/2;
 		cercle = true;
-		}
+	}
 	
 	//Pour chaque coin
 	for(i=0;i<4;i++)
@@ -401,41 +409,41 @@ int Physique::collisionObjetZone(std::vector<Objet*> &objets, int idx)
 
 		//Si c'est une autre zone
 		if((newzonei!=oldzonei)||(newzonej!=oldzonej))
+		{
+			oldzonei = newzonei;
+			oldzonej = newzonej;
+
+			//Ok on va regarder dans cette zone
+			nobjets_zone = tableau_zones[newzonei][newzonej].size();
+            std::vector<int> &objets_zone = tableau_zones[newzonei][newzonej];
+
+			//On parcourt tous les objets de la zone
+			for(k=0;k<nobjets_zone;k++)
 			{
-				oldzonei = newzonei;
-				oldzonej = newzonej;
+				l = objets_zone[k];
+				
+				x2 = objets[l]->getX();
+				y2 = objets[l]->getY();
+				w2 = objets[l]->getW();
+				h2 = objets[l]->getH();
 
-				//Ok on va regarder dans cette zone
-				nobjets_zone = tableau_zones[newzonei][newzonej].size();
-	            std::vector<int> &objets_zone = tableau_zones[newzonei][newzonej];
-
-				//On parcourt tous les objets de la zone
-				for(k=0;k<nobjets_zone;k++)
+				//Si on a deux cercles
+				if( cercle && (objets[l]->getType()==CERCLE))
 				{
-					l = objets_zone[k];
-					
-					x2 = objets[l]->getX();
-					y2 = objets[l]->getY();
-					w2 = objets[l]->getW();
-					h2 = objets[l]->getH();
+					cx2 = x2 + w2/2;
+					cy2 = y2 + h2/2;
+					cr2 = w2/2;
 
-					//Si on a deux cercles
-					if( cercle && (objets[l]->getType()==CERCLE))
-					{
-						cx2 = x2 + w2/2;
-						cy2 = y2 + h2/2;
-						cr2 = w2/2;
-
-						if(collisionCercle(cx1,cy1,cr1,cx2,cy2,cr2))
-							return l;
-					}
-					else //Sinon on fait une collision entre rectangles
-					{
-						if(collisionRect(x1,y1,w1,h1,x2,y2,w2,h2))
-							return l;
-					}
+					if(collisionCercle(cx1,cy1,cr1,cx2,cy2,cr2))
+						return l;
+				}
+				else //Sinon on fait une collision entre rectangles
+				{
+					if(collisionRect(x1,y1,w1,h1,x2,y2,w2,h2))
+						return l;
 				}
 			}
+		}
 	}
 	
 	return -1;
