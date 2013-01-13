@@ -4,14 +4,19 @@ ALL = Run.exe
 
 
 
-Run.exe : BasicRenderer.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
-	-g++ -o Run.exe BasicRenderer.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
+Run.exe : BasicRenderer.o CharacterObject.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
+	-g++ -lBox2D -o Run.exe BasicRenderer.o CharacterObject.o ContactListener.o DeadObject.o LivingObject.o Main.o Object.o Renderer.o World.o WorldLoader.o WorldRenderer.o 
 	-[ -e "Build" ] || mkdir "Build"
 	-mv *.o *.exe Build
 
 BasicRenderer.o: Sources/BasicRenderer.cpp Sources/BasicRenderer.h  Sources/Renderer.h Sources/ObjectData.h
 
 	-g++ -c  Sources/BasicRenderer.cpp 
+
+
+CharacterObject.o: Sources/CharacterObject.cpp Sources/CharacterObject.h  Sources/LivingObject.h Sources/Object.h Sources/Renderer.h  Sources/ObjectData.h
+
+	-g++ -c  Sources/CharacterObject.cpp 
 
 
 ContactListener.o: Sources/ContactListener.cpp Sources/ContactListener.h
