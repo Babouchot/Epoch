@@ -227,6 +227,7 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
+    ennemi->setPos(WIDTH - 10 -  HAUT_BARRE/2 , balle->getY() - LARG_BARRE/2 );
     Physique::updateObjets(objets);
 }
 
@@ -241,7 +242,7 @@ bool Jeu::clavier(unsigned int k)
             return true;
         case SDLK_s:
             balle->setDirVitesse(1.0,0.0);
-            balle->setVitesse(10.0);
+            balle->setVitesse(3.0);
             return true;
         case SDLK_DOWN:
             barre->setPos(barre->getX(), barre->getY()  + SDL_GetTicks()/1000);

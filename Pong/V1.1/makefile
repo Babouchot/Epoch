@@ -1,0 +1,15 @@
+EXE = main
+OBJ = Main.o Objet.o Moteur.o Vecteur.o Rand.o Jeu.o Menu.o Physique.o
+
+FRAMEWORK = -framework OpenGL
+LIBS = `sdl-config --libs` -lSDL_gfx
+OPT = -O3 `sdl-config --cflags` -Wall -I/usr/local/include/SDL -Wextra
+
+$(EXE):	$(OBJ)
+	g++ $(FRAMEWORK) -o $(EXE) $(OBJ) $(OPT) $(LIBS)
+
+$(OBJ):%.o: %.cpp %.h Define.h
+	g++ -c $< $(OPT)
+
+clean:
+	rm $(OBJ) $(EXE)
