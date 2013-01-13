@@ -4,7 +4,7 @@
 #include "ObjectData.h"
 #include <map>
 #include <string>
-
+#include <Box2D/Box2D.h>
 using namespace std;
 
 
@@ -14,18 +14,23 @@ using namespace std;
 //Handle the renderer/objectType matching
 class Renderer
 {
-    private : 
+    protected : 
 
-        map<ObjectType, Renderer*> _availableRenderers;
+        static map<ObjectType, Renderer*> _availableRenderers;
+        b2Body* _body;
+        ObjectType _type;
+        //Create a renderer, should be overrided in every renderer class
+        virtual Renderer* createRenderer(b2Body* body)=0;
 
     public:
 
         Renderer();
         //Create and add to map
-        Renderer( ObjectType type );
+        Renderer( ObjectType type, b2Body* body=NULL );
         virtual void render() =0;
-        //Get the renderer corresponding to the object type
-        static Renderer* getRenderer( ObjectType type );
+        //Get the renderer corresponding to the object type 
+        //and create a new renderer
+        static Renderer* getObjectRenderer( ObjectType type, b2Body* body);
         //Create a new renderer of each type
         static void initializeRenderers();
         ~Renderer();

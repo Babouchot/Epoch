@@ -1,6 +1,8 @@
 #ifndef OBJET_DATA_H
 #define OBJET_DATA_H
 
+#include <string>
+
 enum ObjectProperty {
     FLAMMABLE,
     WATERABLE,

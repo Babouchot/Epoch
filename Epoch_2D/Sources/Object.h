@@ -14,18 +14,20 @@ class Object {
 
         b2Body* _b2Body;
         Renderer* _renderer;
-        vector<ObjectProperty> _property;
-        bool _propertyOn;
+        vector<ObjectProperty> _properties;
+        vector<bool> _propertyOn;
         ObjectType _type;
 
     public :
 
         Object(vector<ObjectProperty> prop, ObjectType type);
         b2Body* getB2Body();
-        bool getPropertyOn();
+        int getPropertyIndex(ObjectProperty prop);
+        bool getPropertyOn(ObjectProperty prop);
         void addProperty(ObjectProperty prop);
         void removeProperty(ObjectProperty prop);
         vector<ObjectProperty> getProperties();
+        void setPropertyOn(ObjectProperty prop, bool On);
         ObjectType getType();
         virtual void render();
         ~Object();
