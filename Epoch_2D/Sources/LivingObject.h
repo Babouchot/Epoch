@@ -8,13 +8,18 @@ enum ActionInput{
     RIGHT,
     JUMP,
     ACTION,
+    HIT,
 };
 
 class LivingObject : public Object {
 
-    private :
+    protected :
 
-
+        Renderer* _movementRenderer;
+        Renderer* _actionRenderer;
+        Renderer* _hitRenderer;
+        Renderer* _jumpRenderer;
+        bool _isFacingLeft;
 
     public:
 

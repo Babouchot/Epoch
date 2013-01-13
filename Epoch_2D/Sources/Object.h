@@ -10,7 +10,7 @@ using namespace std;
 
 class Object {
 
-    private :
+    protected :
 
         b2Body* _b2Body;
         Renderer* _renderer;
