@@ -238,13 +238,13 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
-    if(balle->getY() >= HEIGHT - LARG_BARRE)
-        if(balle->getY() + SDL_GetTicks()/1000 <= HEIGHT)
-            ennemi->setPos(ennemi->getX() , balle->getY() + SDL_GetTicks()/1000 - LARG_BARRE/2);
+    if(balle->getY() + TAILLE_BALLE/2 >= HEIGHT - LARG_BARRE)
+        if(balle->getY() + TAILLE_BALLE/2 + LARG_BARRE/2 <= HEIGHT)
+            ennemi->setPos(ennemi->getX() , balle->getY() + TAILLE_BALLE/2 - LARG_BARRE/2);
         else
             ennemi->setPos(ennemi->getX() , HEIGHT - LARG_BARRE);
     else
-        ennemi->setPos(ennemi->getX() , balle->getY() - LARG_BARRE/2);
+        ennemi->setPos(ennemi->getX() , balle->getY() - LARG_BARRE/2 + TAILLE_BALLE/2);
 
     Physique::updateObjets(objets);
 }
