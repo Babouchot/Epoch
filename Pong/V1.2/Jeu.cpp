@@ -169,6 +169,8 @@ void Jeu::recommence()
     Objet* pad = new Objet();
     Objet* b = new Objet();
 
+    j1 = j2 = 0;
+   
     objets.clear();
     Physique::init();
     jeuEnCours = true;
@@ -333,10 +335,22 @@ void Jeu::toucheObjets()
 
 void Jeu::point(bool i)
 {
-  if (i)
-    j1++;
-  else 
-    j2++;
+  if (i) {
+    if (j1 == 9) {
+      std::cout << "Bravo vous avez gagné ! :)" << std::endl;
+      moteur.initJeu();
+    }
+    else 
+      j1++;
+  }
+  else {
+    if (j2 == 9) {
+      std::cout << "Mince vous avez perdu ! :(" << std::endl;
+      moteur.initJeu();
+    }
+    else
+      j2++;
+  }
 }
 
 void Jeu::afficheScore()
