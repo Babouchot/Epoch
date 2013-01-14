@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Objet.h"
+#include "Jeu.h"
 
 class Physique
 {

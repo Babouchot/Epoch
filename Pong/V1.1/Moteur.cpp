@@ -107,7 +107,8 @@ bool Moteur::estFini()
 void Moteur::echangeFonctions()
 {
     dans_menu = !dans_menu;
-    if(!dans_menu) {
+    if(!dans_menu) 
+    {
         jeu->toucheObjets();
     }
 }

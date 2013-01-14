@@ -89,6 +89,8 @@ class Jeu
 
         //Mis a jour du temps pour les objets 
         void toucheObjets();
+
+        static void point(int);
        
 };
 #endif
