@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     SDL_Surface *screen;
     int fps, last, now;
     FPSmanager manager;
-
+    glutInit(&argc, argv);
     //Initialisation
     if(SDL_Init(SDL_INIT_VIDEO)!=0) {
         cerr << "Probleme pour initialiser SDL: " << SDL_GetError() << endl;

@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifdef __APPLE__&__MACH__
 #include <GLUT/glut.h>
 #else
-#include <GLUT/glut.h>
+#include <GL/glut.h>
 #endif
 
 //Variable globale
