@@ -25,6 +25,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 	
     int nobjets = objets.size();
 
+
 	for(i=0;i<nobjets;i++)
 	{
 		//Sauvegarde de l'ancienne position
@@ -74,7 +75,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 
 			//Si l'objet i est un cercle
 			if(objets[i]->getType()==CERCLE)
-				{
+			{
 				//Mis a jour de l'objet i
 				newvx = vx;
 				newvy = vy;
@@ -82,15 +83,15 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				//Si l'objet res n'est pas un cercle, on prend la direction (newx, newy)
 				//et met la vitesse à 1
 				if(objets[res]->getType()!=CERCLE)
-					{
+				{
 					objets[i]->setDirVitesse(newvx,newvy);
-                    objets[i]->setVitesse(3.0);
-					}
-				else //Sinon on ajoute la direction (newx, newy)
-					{
-					objets[i]->setDirVitesse(objets[i]->getVX()+newvx, objets[i]->getVY()+newvy);
-					}
+                	objets[i]->setVitesse(3.0);
 				}
+				else //Sinon on ajoute la direction (newx, newy)
+				{
+					objets[i]->setDirVitesse(objets[i]->getVX()+newvx, objets[i]->getVY()+newvy);
+				}
+			}
 			
 			if(objets[res]->getType()==CERCLE)
 				{
@@ -112,9 +113,9 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 			}
 		}
 
-		//Ajouter dans les zones
-		ajouterObjetDansZones(objets, i);
-		}
+	//Ajouter dans les zones
+	ajouterObjetDansZones(objets, i);
+	}
 }
 
 //Fonctions qui gerent les collisions

@@ -167,7 +167,7 @@ void Jeu::recommence()
     pad->setVitesse(0);
     pad->setCouleur(0.0,1.0,0.0);
     pad->setTaille(HAUT_BARRE,LARG_BARRE);
-    pad->setPos(10 - HAUT_BARRE/2, 5 - LARG_BARRE/2);
+    pad->setPos(HAUT_BARRE/2, 5);
     barre = pad;
     addObjet(pad);
 
@@ -176,7 +176,7 @@ void Jeu::recommence()
     o->setVitesse(0);
     o->setCouleur(1.0,0.0,0.0);
     o->setTaille(HAUT_BARRE,LARG_BARRE);
-    o->setPos(WIDTH - 10 -  HAUT_BARRE/2, 5 - LARG_BARRE/2);
+    o->setPos(WIDTH - 3*HAUT_BARRE/2, 5);
     ennemi = o;
     addObjet(o);
 
@@ -184,7 +184,7 @@ void Jeu::recommence()
     b->setType(CERCLE);
     b->setVitesse(0);
     b->setTaille(TAILLE_BALLE, TAILLE_BALLE);
-    b->setPos(HAUT_BARRE + 2, LARG_BARRE/2-TAILLE_BALLE);
+    b->setPos(3*HAUT_BARRE/2 + 1 , LARG_BARRE/2-TAILLE_BALLE);
     b->setCouleur(1.0, 1.0, 1.0);
     balle = b;
     // On ajoute l'objet
@@ -227,14 +227,14 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
-    if(balle->getY() <= HEIGHT - LARG_BARRE)
+    if(balle->getY() >= HEIGHT - LARG_BARRE)
         if(balle->getY() + SDL_GetTicks()/1000 <= HEIGHT)
-            ennemi->setPos(ennemi->getX() , balle->getY() + SDL_GetTicks()/1000);
+            ennemi->setPos(ennemi->getX() , balle->getY() + SDL_GetTicks()/1000 - LARG_BARRE/2);
         else
-            ennemi->setPos(ennemi->getX() , balle->getY() + LARG_BARRE/2);
+            ennemi->setPos(ennemi->getX() , HEIGHT - LARG_BARRE);
     else
-        ennemi->setPos(ennemi->getX() , HEIGHT - LARG_BARRE);
-    
+        ennemi->setPos(ennemi->getX() , balle->getY() - LARG_BARRE/2);
+
     Physique::updateObjets(objets);
 }
 
@@ -280,4 +280,9 @@ void Jeu::toucheObjets()
     {
         objets[i]->setDernierTps();
     }
+}
+
+void Jeu::point(int i)
+{
+
 }
