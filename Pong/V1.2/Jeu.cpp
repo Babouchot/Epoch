@@ -326,7 +326,6 @@ void Jeu::point(bool i)
     j1++;
   else 
     j2++;
-  std::cout << "j1: " << j1 << "/j2: " << j2 << std::endl;
 }
 
 void Jeu::afficheScore()
