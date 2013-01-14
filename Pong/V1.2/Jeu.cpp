@@ -238,13 +238,24 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
-    if(balle->getY() + TAILLE_BALLE/2 >= HEIGHT - LARG_BARRE)
-        if(balle->getY() + TAILLE_BALLE/2 + LARG_BARRE/2 <= HEIGHT)
-            ennemi->setPos(ennemi->getX() , balle->getY() + TAILLE_BALLE/2 - LARG_BARRE/2);
-        else
-            ennemi->setPos(ennemi->getX() , HEIGHT - LARG_BARRE);
+    if(balle->getVY() > 0)
+    {
+        ennemi->setDirVitesse(0.0, 1.0);
+        ennemi->setVitesse(2.0);
+    }
     else
-        ennemi->setPos(ennemi->getX() , balle->getY() - LARG_BARRE/2 + TAILLE_BALLE/2);
+    {
+        if(balle->getVY() == 0)
+        {
+            ennemi->setDirVitesse(0.0, 0.001);
+            ennemi->setVitesse(0);
+        }
+        else
+        {
+            ennemi->setDirVitesse(0.0, -1.0);
+            ennemi->setVitesse(2.0);
+        }
+    }
 
     Physique::updateObjets(objets);
 }
@@ -335,11 +346,11 @@ void Jeu::afficheScore()
  
     glLoadIdentity();   
  
-    glRasterPos3f(WIDTH/2 - strlen(strfps), 40,-1.);
+    glRasterPos3f(WIDTH/2 - 20, 39,-1.);
     sprintf ( strfps, "%d : %d ", Jeu::j1, Jeu::j2 );
  
     for (unsigned int i=0;i<strlen(strfps);i++) 
-     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*(strfps+i));
+     glutBitmapCharacter(GLUT_BITMAP_8_BY_13,*(strfps+i));
  
     glPopMatrix();
     delete(strfps);
