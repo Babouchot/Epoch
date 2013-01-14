@@ -1,9 +1,0 @@
-data/menu.bmp
-data/titre.bmp
-20 30
-data/nouveau.bmp
-52 277
-data/quitter.bmp
-302 440
-data/continuer.bmp
-282 180
