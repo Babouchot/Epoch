@@ -42,6 +42,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 class Jeu
 {
 	private:
+	static int j1;
+	static int j2;
+
+
         //Les objets
 		std::vector<Objet*> objets;
 
@@ -90,7 +94,8 @@ class Jeu
         //Mis a jour du temps pour les objets 
         void toucheObjets();
 
-        static void point(int);
+        static void point(bool);
+	
        
 };
 #endif

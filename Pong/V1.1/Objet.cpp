@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "Objet.h"
+#include "Jeu.h"
 
 //Variables statiques
 GLuint Objet::txtballe = 0;
@@ -194,37 +195,54 @@ void Objet::updatePos()
 	pos.set(x,y);
 
     //Verification de la position ie si on sort de l'ecran on "rebondit"
-    //A gauche
-	if(x<0)
-		{
-		pos.setX(1);
-		if(vitdir.getX()<0)
-			vitdir.setX(vitdir.getX()*(-1));
-		}
+	if (getType() == CERCLE) {
+	  //A gauche
+	  if(x<0)
+	    {
+	      pos.setX(1);
+	      if(vitdir.getX()<0) {
+		vitdir.setX(vitdir.getX()*(-1));
+		Jeu::point(false);
+	      }
+	    }
 
-    //A droite
-	if(x+w>=WIDTH)
-		{
-		pos.setX(WIDTH-w-1);
-		if(vitdir.getX()>0)
-			vitdir.setX(vitdir.getX()*(-1));
-		}
+	  //A droite
+	  if(x+w>=WIDTH)
+	    {
+	      pos.setX(WIDTH-w-1);
+	      if(vitdir.getX()>0) {
+		vitdir.setX(vitdir.getX()*(-1));
+		Jeu::point(true);
+	      }
+	    }
 		
-    //En haut
-	if(y<0)
-		{
-		pos.setY(1);
-		if(vitdir.getY()<0)
-			vitdir.setY(vitdir.getY()*(-1));
-		}
+	  //En haut
+	  if(y<0)
+	    {
+	      pos.setY(1);
+	      if(vitdir.getY()<0)
+		vitdir.setY(vitdir.getY()*(-1));
+	    }
         
-    //En bas 
-	if(y+h>=HEIGHT)
-		{
-		pos.setY(HEIGHT-h-1);
-		if(vitdir.getY()>0)
-			vitdir.setY(vitdir.getY()*(-1));
-		}
+	  //En bas 
+	  if(y+h>=HEIGHT)
+	    {
+	      pos.setY(HEIGHT-h-1);
+	      if(vitdir.getY()>0)
+		vitdir.setY(vitdir.getY()*(-1));
+	    }
+	}
+	// BARRE
+	else {
+	  // en haut
+	  if (y < 0) {
+	    pos.setY(1);
+	  }
+	  // en bas
+	  if (y+h >= HEIGHT) {
+	    pos.setY(HEIGHT-h-1);
+	  }
+	}
 }
 
 //Recuperation du type
