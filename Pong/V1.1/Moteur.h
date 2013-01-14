@@ -59,7 +59,7 @@ class Moteur
     bool init();
 
     //Gestion du clavier
-    void clavier(unsigned int k);
+    void clavier(unsigned int k ,int i);
 
     //Est-ce que la partie est finie ?
     bool estFini();

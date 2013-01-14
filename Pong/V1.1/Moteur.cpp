@@ -67,7 +67,7 @@ bool Moteur::init()
 	return jeu->init() && menu->init("data/menu.txt");
 }
 
-void Moteur::clavier(unsigned int k)
+void Moteur::clavier(unsigned int k, int i)
 {
     int gere=false;
     if(dans_menu)
@@ -76,7 +76,7 @@ void Moteur::clavier(unsigned int k)
     }
     else 
     {
-        gere = jeu->clavier(k);
+        gere = jeu->clavier(k, i);
     }
 
     //Si la touche n'est pas geree

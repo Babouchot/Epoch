@@ -84,7 +84,10 @@ int main(int argc, char **argv)
                     moteur.fin();
                     break;
                 case SDL_KEYDOWN:
-		  moteur.clavier(event.key.keysym.sym);
+		            moteur.clavier(event.key.keysym.sym,1);
+                    break;
+                case SDL_KEYUP:
+                    moteur.clavier(event.key.keysym.sym,0);
                     break;
                 default:
                     break;

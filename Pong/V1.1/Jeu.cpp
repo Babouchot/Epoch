@@ -239,7 +239,7 @@ void Jeu::gereSceneServeur()
 }
 
 //Gestion du clavier
-bool Jeu::clavier(unsigned int k)
+bool Jeu::clavier(unsigned int k, int i)
 {
     switch(k)
     {
@@ -252,13 +252,40 @@ bool Jeu::clavier(unsigned int k)
             balle->setVitesse(3.0);
             return true;
         case SDLK_DOWN:
-            if(barre->getY() + LARG_BARRE + SDL_GetTicks()/1000 <= HEIGHT)
-                barre->setPos(barre->getX(), barre->getY() + SDL_GetTicks()/1000);
+            if(i)
+            {
+                if(barre->getY() + LARG_BARRE <= HEIGHT)
+                {
+                    barre->setDirVitesse(0.0, 1.0);
+                    barre->setVitesse(2.0);
+                }
+                else
+                {
+                    barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
+                }
+            }
             else
-                barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
+            {
+                barre->setVitesse(0);
+            }
             return true;
         case SDLK_UP:
-            barre->setPos(barre->getX(), barre->getY()  - SDL_GetTicks()/1000);
+        if(i)
+            {
+                if(barre->getY() + LARG_BARRE <= HEIGHT)
+                {
+                    barre->setDirVitesse(0.0, -1.0);
+                    barre->setVitesse(2.0);
+                }
+                else
+                {
+                    barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
+                }
+            }
+            else
+            {
+                barre->setVitesse(0);
+            }
             return true;
         default:
             return false;

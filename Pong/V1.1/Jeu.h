@@ -79,7 +79,7 @@ class Jeu
 		void gereSceneServeur();
 
         //Gestion du clavier
-        bool clavier(unsigned int);
+        bool clavier(unsigned int, int);
 
         //Recommence la partie
         void recommence();
