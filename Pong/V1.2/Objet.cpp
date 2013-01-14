@@ -195,6 +195,7 @@ void Objet::updatePos()
 	pos.set(x,y);
 
     //Verification de la position ie si on sort de l'ecran on "rebondit"
+<<<<<<< HEAD:Pong/V1.1/Objet.cpp
     //A gauche
     if(getType() == CERCLE)
     {
@@ -245,6 +246,56 @@ void Objet::updatePos()
             setPos(getX(), 0);
         }
     }
+=======
+	if (getType() == CERCLE) {
+	  //A gauche
+	  if(x<0)
+	    {
+	      pos.setX(1);
+	      if(vitdir.getX()<0) {
+		vitdir.setX(vitdir.getX()*(-1));
+		Jeu::point(false);
+	      }
+	    }
+
+	  //A droite
+	  if(x+w>=WIDTH)
+	    {
+	      pos.setX(WIDTH-w-1);
+	      if(vitdir.getX()>0) {
+		vitdir.setX(vitdir.getX()*(-1));
+		Jeu::point(true);
+	      }
+	    }
+		
+	  //En haut
+	  if(y<0)
+	    {
+	      pos.setY(1);
+	      if(vitdir.getY()<0)
+		vitdir.setY(vitdir.getY()*(-1));
+	    }
+        
+	  //En bas 
+	  if(y+h>=HEIGHT)
+	    {
+	      pos.setY(HEIGHT-h-1);
+	      if(vitdir.getY()>0)
+		vitdir.setY(vitdir.getY()*(-1));
+	    }
+	}
+	// BARRE
+	else {
+	  // en haut
+	  if (y < 0) {
+	    pos.setY(1);
+	  }
+	  // en bas
+	  if (y+h >= HEIGHT) {
+	    pos.setY(HEIGHT-h-1);
+	  }
+	}
+>>>>>>> 8575e62b1bbb5a8696a02296dcfbc5f12ce5fa71:Pong/V1.2/Objet.cpp
 }
 
 //Recuperation du type

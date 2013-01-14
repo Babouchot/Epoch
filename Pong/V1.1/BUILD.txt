@@ -1,1 +1,0 @@
-use "make -f makefile.linux" if you are running a Linux pc
