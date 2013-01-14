@@ -230,7 +230,6 @@ void Objet::updatePos()
     		if(vitdir.getY()>0)
     			vitdir.setY(vitdir.getY()*(-1));
     		}
-        std::cout << Jeu::j1 << "/" << Jeu::j2 << std::endl;
     }
     else
     {

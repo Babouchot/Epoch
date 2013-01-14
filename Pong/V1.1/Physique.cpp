@@ -17,25 +17,31 @@ return true;
 void Physique::updateObjets(std::vector<Objet*> &objets)
 {	
 	int i;
+	int res;
+	double oldx, oldy;
+
+	double vx,vy,newvx, newvy,n;
+	double x1,x2,y1,y2;
+	
     int nobjets = objets.size();
 
-
 	for(i=0;i<nobjets;i++)
-	{
+		{
+		//Sauvegarde de l'ancienne position
+		oldx = objets[i]->getX();
+		oldy = objets[i]->getY();
+
+		//Enlever des zones
+		enleverObjetDesZones(objets, i);
 		
 		//Mise a jour de la position
 		objets[i]->updatePos();
-		/*
-		if(objets[i]->getType()==BARRE)
-		{
-			if(objets[i]->getY() + LARG_BARRE > HEIGHT)
-			{
-				objets[i]->setPos(oldx,oldy);
-			}
-		}
+
+		//Est-ce qu'on a une collision
+		res = collisionObjetZone(objets, i);
 
 		if(res>=0)
-		{
+			{
 			//Si on a une collision, on remet l'ancienne position
 			objets[i]->setPos(oldx,oldy);
 		
@@ -60,7 +66,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 
 			//Si l'objet i est un cercle
 			if(objets[i]->getType()==CERCLE)
-			{
+				{
 				//Mis a jour de l'objet i
 				newvx = vx;
 				newvy = vy;
@@ -68,18 +74,18 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				//Si l'objet res n'est pas un cercle, on prend la direction (newx, newy)
 				//et met la vitesse à 1
 				if(objets[res]->getType()!=CERCLE)
-				{
+					{
 					objets[i]->setDirVitesse(newvx,newvy);
-                	objets[i]->setVitesse(3.0);
-				}
+                    objets[i]->setVitesse(1);
+					}
 				else //Sinon on ajoute la direction (newx, newy)
-				{
+					{
 					objets[i]->setDirVitesse(objets[i]->getVX()+newvx, objets[i]->getVY()+newvy);
+					}
 				}
-			}
 			
 			if(objets[res]->getType()==CERCLE)
-			{
+				{
 				//Mis a jour de l'objet res
 				newvx = (-vx);
 				newvy = (-vy);
@@ -87,18 +93,21 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				//Si l'objet i n'est pas un cercle, on prend la direction (newx, newy)
 				//et met la vitesse à 1
 				if(objets[res]->getType()!=CERCLE)
-				{
+					{
 					objets[res]->setDirVitesse(newvx,newvy);
-                	objets[res]->setVitesse(3.0);
-				}
+                    objets[res]->setVitesse(1);
+					}
 				else    //Sinon on ajoute la direction (newx, newy)
-				{
-					objets[res]->setDirVitesse(objets[res]->getVX()+newvx, objets[res]->getVY()+newvy);
+					{
+					objets[res]->setDirVitesse(objets[res]->getVX()+newvx,
+							objets[res]->getVY()+newvy);
+					}
 				}
 			}
+
+		//Ajouter dans les zones
+		ajouterObjetDansZones(objets, i);
 		}
-	*/
-	}
 }
 
 //Fonctions qui gerent les collisions
