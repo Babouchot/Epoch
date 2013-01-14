@@ -20,6 +20,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "Jeu.h"
+#include <string>
+#ifdef __APPLE__&__MACH__
+#include <GLUT/glut.h>
+#else
+#include <GLUT/glut.h>
+#endif
 
 //Variable globale
 extern Moteur moteur;
@@ -321,4 +327,21 @@ void Jeu::point(bool i)
   else 
     j2++;
   std::cout << "j1: " << j1 << "/j2: " << j2 << std::endl;
+}
+
+void Jeu::afficheScore()
+{
+    char* strfps = new char();
+    glPushMatrix();
+ 
+    glLoadIdentity();   
+ 
+    glRasterPos3f(WIDTH/2 - strlen(strfps), 40,-1.);
+    sprintf ( strfps, "%d : %d ", Jeu::j1, Jeu::j2 );
+ 
+    for (unsigned int i=0;i<strlen(strfps);i++) 
+     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*(strfps+i));
+ 
+    glPopMatrix();
+    delete(strfps);
 }

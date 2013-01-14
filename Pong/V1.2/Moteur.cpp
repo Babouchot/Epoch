@@ -60,6 +60,7 @@ void Moteur::dessineJeu()
 {
 	jeu->affiche();
 	jeu->gereSceneServeur();
+    jeu->afficheScore();
 }
 
 bool Moteur::init()

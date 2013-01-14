@@ -95,6 +95,8 @@ class Jeu
         void toucheObjets();
 
         static void point(bool);
+
+        void afficheScore();
        
 };
 #endif
