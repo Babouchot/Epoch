@@ -9,38 +9,23 @@ int i,j;
 for(i=0;i<QUADLIGNE;i++)
   for(j=0;j<QUADCOL;j++)
     {
-    tableau_zones[i][j].clear();
+    	tableau_zones[i][j].clear();
     }
 return true;
 }
 
 void Physique::updateObjets(std::vector<Objet*> &objets)
-{
+{	
 	int i;
-	int res;
-	double oldx, oldy;
-
-	double vx,vy,newvx, newvy,n;
-	double x1,x2,y1,y2;
-	
     int nobjets = objets.size();
 
 
 	for(i=0;i<nobjets;i++)
 	{
-		//Sauvegarde de l'ancienne position
-		oldx = objets[i]->getX();
-		oldy = objets[i]->getY();
-
-		//Enlever des zones
-		enleverObjetDesZones(objets, i);
 		
 		//Mise a jour de la position
 		objets[i]->updatePos();
-
-		//Est-ce qu'on a une collision
-		res = collisionObjetZone(objets, i);
-
+		/*
 		if(objets[i]->getType()==BARRE)
 		{
 			if(objets[i]->getY() + LARG_BARRE > HEIGHT)
@@ -94,7 +79,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 			}
 			
 			if(objets[res]->getType()==CERCLE)
-				{
+			{
 				//Mis a jour de l'objet res
 				newvx = (-vx);
 				newvy = (-vy);
@@ -112,9 +97,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				}
 			}
 		}
-
-	//Ajouter dans les zones
-	ajouterObjetDansZones(objets, i);
+	*/
 	}
 }
 

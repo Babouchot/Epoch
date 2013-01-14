@@ -90,7 +90,11 @@ class Jeu
         //Mis a jour du temps pour les objets 
         void toucheObjets();
 
-        static void point(int);
+        static void point(bool);
+
+        //int qui représente les points de joueurs
+        static int j1;
+        static int j2;
        
 };
 #endif

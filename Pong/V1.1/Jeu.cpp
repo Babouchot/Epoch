@@ -24,6 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //Variable globale
 extern Moteur moteur;
 
+int Jeu::j1 = 0;
+int Jeu::j2 = 0;
+
 //Constructeur
 Jeu::Jeu()
 {
@@ -141,6 +144,8 @@ bool Jeu::initTextures()
 //Initialisation du jeu
 bool Jeu::init()
 {
+    j1 = 0;
+    j2 = 0;
     return initObjets() && initTextures() && Physique::init();
 }
 
@@ -309,7 +314,10 @@ void Jeu::toucheObjets()
     }
 }
 
-void Jeu::point(int i)
+void Jeu::point(bool i)
 {
-
+    if(!i)
+        j1++;
+    else
+        j2++;
 }
