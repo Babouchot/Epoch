@@ -316,16 +316,9 @@ void Jeu::toucheObjets()
 
 void Jeu::point(bool i)
 {
-<<<<<<< HEAD:Pong/V1.1/Jeu.cpp
-    if(!i)
-        j1++;
-    else
-        j2++;
-=======
   if (i)
     j1++;
   else 
     j2++;
   std::cout << "j1: " << j1 << "/j2: " << j2 << std::endl;
->>>>>>> 8575e62b1bbb5a8696a02296dcfbc5f12ce5fa71:Pong/V1.2/Jeu.cpp
 }

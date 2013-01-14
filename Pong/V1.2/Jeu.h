@@ -95,14 +95,6 @@ class Jeu
         void toucheObjets();
 
         static void point(bool);
-<<<<<<< HEAD:Pong/V1.1/Jeu.h
-
-        //int qui représente les points de joueurs
-        static int j1;
-        static int j2;
-=======
-	
->>>>>>> 8575e62b1bbb5a8696a02296dcfbc5f12ce5fa71:Pong/V1.2/Jeu.h
        
 };
 #endif
