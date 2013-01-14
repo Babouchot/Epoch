@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifdef __APPLE__&__MACH__
 #include <GLUT/glut.h>
 #else
-#include <GLUT/glut.h>
+#include <GL/glut.h>
 #endif
 
 //Variable globale
@@ -326,7 +326,6 @@ void Jeu::point(bool i)
     j1++;
   else 
     j2++;
-  std::cout << "j1: " << j1 << "/j2: " << j2 << std::endl;
 }
 
 void Jeu::afficheScore()
