@@ -378,17 +378,16 @@ void Jeu::afficheScore()
 
 void Jeu::afficheStart()
 {
-    char* strfps = new char();
+  std::string debut_partie = "Appuyez sur S pour démmarrer";
     glPushMatrix();
  
     glLoadIdentity();   
  
     glRasterPos3f(WIDTH/2 - 112, 117,-1.);
-    sprintf (strfps, "Appuyez sur S pour démmarrer");
  
-    for (unsigned int i=0;i<strlen(strfps);i++) 
-     glutBitmapCharacter(GLUT_BITMAP_8_BY_13,*(strfps+i));
+    for (unsigned int i=0;i<debut_partie.size();i++) 
+      glutBitmapCharacter(GLUT_BITMAP_8_BY_13,debut_partie[i]);
  
     glPopMatrix();
-    delete(strfps);
+
 }

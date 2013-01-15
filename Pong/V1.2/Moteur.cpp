@@ -62,7 +62,7 @@ void Moteur::dessineJeu()
 	jeu->gereSceneServeur();
     jeu->afficheScore();
     if(jeu->pouet)
-        jeu->afficheStart();
+      jeu->afficheStart();
 }
 
 bool Moteur::init()
