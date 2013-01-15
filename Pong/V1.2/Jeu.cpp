@@ -152,6 +152,7 @@ bool Jeu::init()
 {
     j1 = 0;
     j2 = 0;
+    pouet = true;
     return initObjets() && initTextures() && Physique::init();
 }
 
@@ -168,6 +169,7 @@ void Jeu::recommence()
     Objet* o = new Objet();
     Objet* pad = new Objet();
     Objet* b = new Objet();
+    pouet = true;
 
     j1 = j2 = 0;
    
@@ -180,16 +182,16 @@ void Jeu::recommence()
     pad->setVitesse(0);
     pad->setCouleur(0.0,1.0,0.0);
     pad->setTaille(HAUT_BARRE,LARG_BARRE);
-    pad->setPos(HAUT_BARRE/2, 5);
+    pad->setPos(HAUT_BARRE/2, HEIGHT/2 - LARG_BARRE/2);
     barre = pad;
     addObjet(pad);
 
     //2eme barre
     o->setType(BARRE);
     o->setVitesse(0);
-    o->setCouleur(1.0,0.0,0.0);
+    o->setCouleur(2.0,0.12,0.32);
     o->setTaille(HAUT_BARRE,LARG_BARRE);
-    o->setPos(WIDTH - 3*HAUT_BARRE/2, 5);
+    o->setPos(WIDTH - 3*HAUT_BARRE/2, HEIGHT/2 - LARG_BARRE/2);
     ennemi = o;
     addObjet(o);
 
@@ -197,7 +199,7 @@ void Jeu::recommence()
     b->setType(CERCLE);
     b->setVitesse(0);
     b->setTaille(TAILLE_BALLE, TAILLE_BALLE);
-    b->setPos(3*HAUT_BARRE/2 + 1 , LARG_BARRE/2-TAILLE_BALLE);
+    b->setPos(WIDTH/2 - TAILLE_BALLE/2, HEIGHT/2 - TAILLE_BALLE/2);
     b->setCouleur(1.0, 1.0, 1.0);
     balle = b;
     // On ajoute l'objet
@@ -274,6 +276,10 @@ bool Jeu::clavier(unsigned int k, int i)
         case SDLK_s:
             balle->setDirVitesse(1.0,0.0);
             balle->setVitesse(3.0);
+            if(pouet)
+            {
+                pouet = !pouet;
+            }
             return true;
         case SDLK_DOWN:
             if(i)
@@ -362,6 +368,23 @@ void Jeu::afficheScore()
  
     glRasterPos3f(WIDTH/2 - 20, 39,-1.);
     sprintf ( strfps, "%d : %d ", Jeu::j1, Jeu::j2 );
+ 
+    for (unsigned int i=0;i<strlen(strfps);i++) 
+     glutBitmapCharacter(GLUT_BITMAP_8_BY_13,*(strfps+i));
+ 
+    glPopMatrix();
+    delete(strfps);
+}
+
+void Jeu::afficheStart()
+{
+    char* strfps = new char();
+    glPushMatrix();
+ 
+    glLoadIdentity();   
+ 
+    glRasterPos3f(WIDTH/2 - 112, 117,-1.);
+    sprintf (strfps, "Appuyez sur S pour démmarrer");
  
     for (unsigned int i=0;i<strlen(strfps);i++) 
      glutBitmapCharacter(GLUT_BITMAP_8_BY_13,*(strfps+i));

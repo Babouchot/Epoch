@@ -63,6 +63,8 @@ class Jeu
 		bool initTextures();
 
 	public:
+
+        bool pouet;
 		//Constructeur et Destructeur
 		Jeu();
 		~Jeu();
@@ -97,6 +99,8 @@ class Jeu
         static void point(bool);
 
         void afficheScore();
+
+        void afficheStart();
        
 };
 #endif
