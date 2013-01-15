@@ -1,0 +1,2 @@
+installer libsdl-gfx1.2-dev, freeglut3-dev, OpenGL et SDL.
+Faire make -f makefile.linux
