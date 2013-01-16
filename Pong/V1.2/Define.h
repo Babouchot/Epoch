@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <fstream>
 
 
-#ifdef __APPLE__&__MACH__
+#ifdef __APPLE__&__MACH
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #else
