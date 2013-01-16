@@ -361,7 +361,7 @@ void Jeu::point(bool i)
 
 void Jeu::afficheScore()
 {
-    char* strfps = new char();
+    std::string score = new string();
     glPushMatrix();
  
     glLoadIdentity();   
@@ -378,7 +378,7 @@ void Jeu::afficheScore()
 
 void Jeu::afficheStart()
 {
-  std::string debut_partie = "Appuyez sur S pour démmarrer";
+  std::string debut_partie = "Appuyez sur S pour commencer";
     glPushMatrix();
  
     glLoadIdentity();   
