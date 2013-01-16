@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "Jeu.h"
+#include <sstream>
 #include <string>
 #ifdef __APPLE__&__MACH__
 #include <GLUT/glut.h>
@@ -361,19 +362,19 @@ void Jeu::point(bool i)
 
 void Jeu::afficheScore()
 {
-    std::string score = new string();
+    std::stringstream ss;
+    ss << Jeu::j1 << " : " << Jeu::j2;
+    std::string score = ss.str();
     glPushMatrix();
  
     glLoadIdentity();   
  
     glRasterPos3f(WIDTH/2 - 20, 39,-1.);
-    sprintf ( strfps, "%d : %d ", Jeu::j1, Jeu::j2 );
  
-    for (unsigned int i=0;i<strlen(strfps);i++) 
-     glutBitmapCharacter(GLUT_BITMAP_8_BY_13,*(strfps+i));
+    for (unsigned int i=0;i<score.size();i++) 
+     glutBitmapCharacter(GLUT_BITMAP_8_BY_13,score[i]);
  
     glPopMatrix();
-    delete(strfps);
 }
 
 void Jeu::afficheStart()
