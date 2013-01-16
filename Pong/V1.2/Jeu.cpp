@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Jeu.h"
 #include <sstream>
 #include <string>
-#ifdef __APPLE__&__MACH__
+#ifdef __APPLE__&__MACH
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
