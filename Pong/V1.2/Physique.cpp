@@ -1,4 +1,5 @@
 #include "Physique.h"
+#include <SDL.h>
 
 std::vector<int> Physique::tableau_zones[QUADLIGNE][QUADCOL];
 
@@ -76,7 +77,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				if(objets[res]->getType()!=CERCLE)
 					{
 					objets[i]->setDirVitesse(newvx,newvy);
-                    objets[i]->setVitesse(3);
+                    objets[i]->setVitesse(2 * SDL_GetTicks()/10000 + 1);
 					}
 				else //Sinon on ajoute la direction (newx, newy)
 					{
@@ -95,7 +96,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				if(objets[res]->getType()!=CERCLE)
 					{
 					objets[res]->setDirVitesse(newvx,newvy);
-                    objets[res]->setVitesse(3);
+                    objets[res]->setVitesse(2 * SDL_GetTicks()/1000 + 1);
 					}
 				else    //Sinon on ajoute la direction (newx, newy)
 					{
