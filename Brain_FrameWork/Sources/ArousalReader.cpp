@@ -1,4 +1,7 @@
 #include "ArousalReader.h"
+#include <cmath>
+
+using namespace std;
 
 EE_DataChannel_t targetChannelList[] = {
 		ED_COUNTER,
@@ -8,23 +11,51 @@ EE_DataChannel_t targetChannelList[] = {
 		ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER, ED_SYNC_SIGNAL
 	};
 
-ArousalReader::ArousalReader(){
-	_fftSum= new double[10];
+ArousalReader::ArousalReader() : secs(0){
+	_fftSum= *new vector<double>;
+	readytocollect=false;
 }
 
 void ArousalReader::initialiseReading(){
 
-	EmoEngineEventHandle eEvent			= EE_EmoEngineEventCreate();
-	EmoStateHandle eState				= EE_EmoStateCreate();
+	eEvent = EE_EmoEngineEventCreate();
+	eState = EE_EmoStateCreate();
+	const unsigned short composerPort	= 1726;
+	int option=1;
+	switch (option) {
+		case 1:
+		{
+			if (EE_EngineConnect() != EDK_OK) {
+				cout <<"Emotiv Engine start up failed"<<endl;
+				throw ArousalReader::EmotivConnectException();
+			}
+			else
+			{
+				cout<<"Emotiv Engine start up sucssessful."<<endl;
+			}
+			break;
+		}
+		case 2:
+		{
+			cout << "Target IP of EmoComposer? [127.0.0.1] "<<endl;
+			string input("127.0.0.1");
 
-	if (EE_EngineConnect() != EDK_OK) {
-        throw ArousalReader::EmotivConnectException();
+			if (EE_EngineRemoteConnect(input.c_str(), composerPort) != EDK_OK) {
+				string errMsg = "Cannot connect to EmoComposer on [" + input + "]";
+				cout<< errMsg.c_str();
+			}
+			break;
+		}
+		default:
+			cout<< "Invalid option..."<<endl;
+			break;
 	}
 
-	float secs=0.0f;
 
-    DataHandle hData = EE_DataCreate();
+    hData = EE_DataCreate();
 	EE_DataSetBufferSizeInSec(secs);
+
+	cout<<"reading initialise"<<endl;
 }
 
 void ArousalReader::endReading(){
@@ -34,12 +65,12 @@ void ArousalReader::endReading(){
 	EE_EmoEngineEventFree(eEvent);
 }
 
-double* ArousalReader::readNextFrequencies(){
+bool ArousalReader::readNextFrequencies(){
 
-	bool readytocollect;
-
+	//cout<<"Starting to read";
 	if(EE_EngineGetNextEvent(eEvent)==EDK_OK){
 
+		//cout<<"EDK OK"<<endl;
 		EE_Event_t eventType = EE_EmoEngineEventGetType(eEvent);
 		EE_EmoEngineEventGetUserId(eEvent, &userID);
 
@@ -47,57 +78,140 @@ double* ArousalReader::readNextFrequencies(){
 		if (eventType == EE_UserAdded) {
 			EE_DataAcquisitionEnable(userID,true);
 			readytocollect = true;
+			cout<<"Ready to collect set to true"<<endl;
 		}
 	}
 
 	if(readytocollect){
+		//cout<<"in the if"<<endl;
 		EE_DataUpdateHandle(0, hData);
-
+		//cout<<"test"<<endl;
 		unsigned int nSamplesTaken=0;
-		float secs1=0;
 		EE_DataGetNumberOfSample(hData,&nSamplesTaken);
-		EE_DataSetBufferSizeInSec(secs1);
+		EE_DataSetBufferSizeInSec(secs);
 
+		//cout<<"Buffer size in sec "<<secs<<endl;
+
+		//cout<<"Collecting started"<<endl;
 
 		if (nSamplesTaken != 0) {
 
+			//cout<<"Reading "<<nSamplesTaken<<" samples"<<endl;
+
 			double* currentSample = new double[nSamplesTaken];
-			double* imaginaryStuff;
-			//reinit the _fftSum
-			cleanFftSum(nSamplesTaken);
+			
+
+			double* result=new double[nSamplesTaken];
 
 			for (int i = _indexFirstChannel ; i<= _indexLastChannel ; i++) {//pour chaque capteur
 
 				EE_DataGet(hData, targetChannelList[i], currentSample, nSamplesTaken);
-				processData(currentSample);
+				processData(currentSample, result);
 			}
 
-			int newSize=FFT::closestTwoPower(nSamplesTaken);
-			imaginaryStuff=new double[newSize];
-			//currentSample+newSize=NULL;
-			FFT fourrier(newSize);
-			fourrier.fft(currentSample, imaginaryStuff);
-			//TODO stuff : using the arrays
+			//push the new samples into the fftSum
+			for(int i=0;i<nSamplesTaken;++i){
+				_fftSum.push_back(result[i]);
+			}
+
+			if(_fftSum.size()>=_samplingRate){
+
+				/*int newSize=FFT::closestTwoPower(_fftSum.size());
+				cout<<"newSize "<<newSize<<endl;
+				imaginaryStuff=new double[newSize];
+				cout<<"Fourrier starting"<<endl;
+				FFT fourrier(newSize);*/
+				//*** &_fftSum[0]=>double array from the vector ***//
+				/*fourrier.fft(&_fftSum[0], imaginaryStuff);
+				cout<<"Fourrier done"<<endl;
+
+				printArray(&_fftSum[0], newSize);
+				printArray(imaginaryStuff, newSize);
+
+				delete[] imaginaryStuff;*/
+				return lookForWaves();
+			}
+
 			delete[] currentSample;
+			delete[] result;
 		} else {
 			throw ArousalReader::NoSampleFoundException();
 		}
-
-		return _fftSum;
 	}
-	return NULL;
+	return false;
 }
 
-void ArousalReader::processData( double* channelInput ){
+void ArousalReader::processData( double* channelInput, double* result ){
 	for(int i=0; i<sizeof(channelInput)/sizeof(double);++i){
-		_fftSum[i]+=channelInput[i];
+		result[i]+=channelInput[i];
 	}
 }
 
-void ArousalReader::cleanFftSum( int nbSample ){
-	_fftSum = new double[nbSample];
+void ArousalReader::cleanFftSum(){
+	_fftSum.clear();
+	_fftSum = *new vector<double>();
+}
+
+bool ArousalReader::lookForWaves(){
+
+	double* imaginaryStuff;
+	int betaFirstIndex=15;
+	int betaLastIndex=29;
+	int alpahFirstIndex=7;
+	int alphaLastIndex=14;
+	double betaSumRe=0;
+	double betaSumIr=0;
+
+	double alphaSumRe=0;
+	double alphaSumIr=0;
+
+	int newSize=FFT::closestTwoPower(_fftSum.size());
+
+	cout<<"newSize "<<newSize<<endl;
+	imaginaryStuff=new double[newSize];
+	initialiseArray(imaginaryStuff, newSize);
+
+	cout<<"Fourrier starting"<<endl;
+	FFT fourrier(newSize);
+	fourrier.fft(&_fftSum[0], imaginaryStuff);
+
+	cout<<"Fourrier done"<<endl;
+
+	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
+		betaSumRe+=abs(_fftSum[i])/1000;
+		betaSumIr+=abs(imaginaryStuff[i])/1000;
+	}
+
+	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
+		alphaSumRe+=abs(_fftSum[i])/1000;
+		alphaSumIr+=abs(imaginaryStuff[i])/1000;
+	}
+
+	cout<<"Beta SumRe "<<betaSumRe<<endl;
+	cout<<"Beta SumIr "<<betaSumIr<<endl;
+	cout<<"Alpha SumRe "<<alphaSumRe<<endl;
+	cout<<"Alpha SumIr "<<alphaSumIr<<endl;
+
+	delete[] imaginaryStuff;
+	cleanFftSum();
+
+	return false;
 }
 
 ArousalReader::~ArousalReader(){
-	delete[] _fftSum;
+	delete &_fftSum;
+}
+
+void ArousalReader::printArray(double* array, int size){
+	cout<<"[";
+	for(int i=0;i<size;++i){
+		cout<<array[i]<<", ";
+	}
+	cout<<"]"<<endl;
+}
+
+void ArousalReader::initialiseArray(double* array, int size){
+		for(int i=0;i<size;++i){
+		array[i]=0.0;
+	}
 }

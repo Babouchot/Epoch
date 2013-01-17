@@ -20,5 +20,6 @@ class FFT {
   void fft(double* x, double* y);
   static int closestTwoPower(int n);
 };
+
 #endif
 	

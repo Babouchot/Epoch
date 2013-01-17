@@ -118,11 +118,11 @@ void FFT::fft(double x[], double y[]) {
 }     
 
 int FFT::closestTwoPower(int n){
-  int i=1;
+  int i=0;
   int res=0;
   while(res<=n){
-    res=pow(2,i);
     ++i;
+    res=pow(2,i);
   }
   return pow(2,i-1);
 }

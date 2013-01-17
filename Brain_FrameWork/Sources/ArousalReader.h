@@ -5,16 +5,22 @@
 #include "edk.h"
 #include "edkErrorCode.h"
 #include "fft.h"
+#include <string>
+#include <iostream>
+#include <vector>
 
 class ArousalReader {
 
 	private :
 
-		double* _fftSum;
+		std::vector<double> _fftSum;
 		EmoEngineEventHandle eEvent;
 		EmoStateHandle eState;
 		DataHandle hData;
+		float secs;
 		unsigned int userID;
+		bool readytocollect;
+		static const unsigned int _samplingRate = 128; //Hz
 		static const unsigned int _indexFirstChannel=1;
 		static const unsigned int _indexLastChannel=14;
 //	AF3,F7,F3, FC5, T7, P7, O1, O2,P8, T8, FC6, F4,F8, AF4 are the wanted channels
@@ -25,6 +31,8 @@ class ArousalReader {
 		ED_FC6, ED_F4, ED_F8, ED_AF4, ED_GYROX, ED_GYROY, ED_TIMESTAMP, 
 		ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER, ED_SYNC_SIGNAL
 */
+		void printArray(double* array, int size);
+		void initialiseArray(double* array, int size);
 
 	public:
 
@@ -32,17 +40,11 @@ class ArousalReader {
 		void initialiseReading();
 		void endReading();
 
-		/*
-		* Read the next piece of data for each channel, process it and return the fftSum or NULL if there is nothing to return
-		* raise a NoSampleFoundException if no sample are to be read
-		*/
-		double* readNextFrequencies();
+		bool readNextFrequencies();
 
-		/*
-		* FFT the data and add it to the fftSum
-		*/
-		void processData( double* channelInput);
-		void cleanFftSum(int nbSample);
+		void processData( double* channelInput, double* result);
+		void cleanFftSum();
+		bool lookForWaves();
 		~ArousalReader();
 
 		class EmotivConnectException{};
