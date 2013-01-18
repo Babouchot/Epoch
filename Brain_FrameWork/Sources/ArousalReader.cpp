@@ -14,17 +14,18 @@ EE_DataChannel_t targetChannelList[] = {
 		ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER, ED_SYNC_SIGNAL
 	};
 
-ArousalReader::ArousalReader() : secs(0){
+ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
+						secs(0), _postProcessingAlgorithm(postProcess),
+						_postProcessingAlgorithm(preProcess) {
 	_fftSum= *new vector<double>;
-	readytocollect=false;
+	___readyToCollect=false;
 }
 
-void ArousalReader::initialiseReading(){
+void ArousalReader::initialiseReading(int option){
 
 	eEvent = EE_EmoEngineEventCreate();
 	eState = EE_EmoStateCreate();
 	const unsigned short composerPort	= 1726;
-	int option=1;
 	switch (option) {
 		case 1:
 		{
@@ -51,6 +52,7 @@ void ArousalReader::initialiseReading(){
 		}
 		default:
 			cout<< "Invalid option..."<<endl;
+			throw ArousalReader::InitialisationFailureException();
 			break;
 	}
 
@@ -70,137 +72,51 @@ void ArousalReader::endReading(){
 
 bool ArousalReader::readNextFrequencies(){
 
-	//cout<<"Starting to read";
 	if(EE_EngineGetNextEvent(eEvent)==EDK_OK){
 
-		//cout<<"EDK OK"<<endl;
 		EE_Event_t eventType = EE_EmoEngineEventGetType(eEvent);
 		EE_EmoEngineEventGetUserId(eEvent, &userID);
 
 		// Log the EmoState if it has been updated
 		if (eventType == EE_UserAdded) {
 			EE_DataAcquisitionEnable(userID,true);
-			readytocollect = true;
+			___readyToCollect = true;
 			cout<<"Ready to collect set to true"<<endl;
 		}
 	}
 
-	if(readytocollect){
-		//cout<<"in the if"<<endl;
+	if(__readyToCollect){
+
 		EE_DataUpdateHandle(0, hData);
-		//cout<<"test"<<endl;
 		unsigned int nSamplesTaken=0;
 		EE_DataGetNumberOfSample(hData,&nSamplesTaken);
 		EE_DataSetBufferSizeInSec(secs);
 
-		//cout<<"Buffer size in sec "<<secs<<endl;
-
-		//cout<<"Collecting started"<<endl;
-
 		if (nSamplesTaken != 0) {
 
-			//cout<<"Reading "<<nSamplesTaken<<" samples"<<endl;
-
 			double* currentSample = new double[nSamplesTaken];
-			
 
-			double* result=new double[nSamplesTaken];
-			initialiseArray(result, nSamplesTaken);
-
-			for (int i = _indexFirstChannel ; i<= _indexLastChannel ; i++) {//pour chaque capteur
-
-				EE_DataGet(hData, targetChannelList[i], currentSample, nSamplesTaken);
-				processData(currentSample, result, nSamplesTaken);
-			}
-
-			//push the new samples into the fftSum
 			for(int i=0;i<nSamplesTaken;++i){
-				_fftSum.push_back(result[i]);
+				vector<double> result;
+				for (int chan = _indexFirstChannel ; chan<= _indexLastChannel ; chan++) {//pour chaque capteur
+
+					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
+					result.push_back(currentSample[i]);
+				}
+				_rawData.push_back(result);
 			}
 
-			if(_fftSum.size()>=_samplingRate){
-
-				/*int newSize=FFT::closestTwoPower(_fftSum.size());
-				cout<<"newSize "<<newSize<<endl;
-				imaginaryStuff=new double[newSize];
-				cout<<"Fourrier starting"<<endl;
-				FFT fourrier(newSize);*/
-				//*** &_fftSum[0]=>double array from the vector ***//
-				/*fourrier.fft(&_fftSum[0], imaginaryStuff);
-				cout<<"Fourrier done"<<endl;
-
-				printArray(&_fftSum[0], newSize);
-				printArray(imaginaryStuff, newSize);
-
-				delete[] imaginaryStuff;*/
-				return lookForWaves();
+			if(_rawData.size()>=_samplingRate){
+				_lastRawData = *new vector<vector<double>>(_rawData);
+				_rawData.clear();
+				return true;
 			}
 
 			delete[] currentSample;
-			delete[] result;
 		} else {
 			throw ArousalReader::NoSampleFoundException();
 		}
 	}
-	return false;
-}
-
-void ArousalReader::processData( double* channelInput, double* result, int size ){
-	for(int i=0; i<size;++i){
-		result[i]+=channelInput[i];
-	}
-}
-
-void ArousalReader::cleanFftSum(){
-	_fftSum.clear();
-	_fftSum = *new vector<double>();
-}
-
-bool ArousalReader::lookForWaves(){
-
-	double* imaginaryStuff;
-	int betaFirstIndex=15;
-	int betaLastIndex=29;
-	int alpahFirstIndex=7;
-	int alphaLastIndex=14;
-	double betaSumRe=0;
-	double betaSumIr=0;
-
-	double alphaSumRe=0;
-	double alphaSumIr=0;
-
-	int newSize=FFT::closestTwoPower(_fftSum.size());
-
-	cout<<"newSize "<<newSize<<endl;
-	imaginaryStuff=new double[newSize];
-	initialiseArray(imaginaryStuff, newSize);
-
-	cout<<"Fourrier starting"<<endl;
-	FFT fourrier(newSize);
-	fourrier.fft(&_fftSum[0], imaginaryStuff);
-
-	cout<<"Fourrier done"<<endl;
-
-	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
-		betaSumRe+=abs(_fftSum[i]);
-		betaSumIr+=abs(imaginaryStuff[i]);
-	}
-
-	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
-		alphaSumRe+=abs(_fftSum[i]);
-		alphaSumIr+=abs(imaginaryStuff[i]);
-	}
-
-	cout<<"Beta SumRe "<<betaSumRe<<endl;
-	cout<<"Beta SumIr "<<betaSumIr<<endl;
-	cout<<"Alpha SumRe "<<alphaSumRe<<endl;
-	cout<<"Alpha SumIr "<<alphaSumIr<<endl;
-	ofstream ofs("res.cvs", ios::app);
-	ofs<<betaSumRe<<","<<betaSumIr<<","<<alphaSumRe<<","<<alphaSumIr<<endl;
-	ofs.close();
-	delete[] imaginaryStuff;
-	cleanFftSum();
-
 	return false;
 }
 
@@ -221,3 +137,12 @@ void ArousalReader::initialiseArray(double* array, int size){
 		array[i]=0.0;
 	}
 }
+
+		void normalize(double* array);
+		void printArrayToFile(std::string file, double* array);
+		std::vector<double> getBetaWavesFromChannel(int channelIndex);
+		std::vector<double> getAlphaWavesFromChannel(int channelIndex);
+		std::vector<double> getFrequenciesFromChannel(int channelIndex);
+		std::vector<double> getRawDataFromChannel(int channelIndex);
+		std::vector<double> getFrequenciesRangeFromChannel(int begin, int end, int channelIndex);
+		std::map<int, std::string> getChannelList();

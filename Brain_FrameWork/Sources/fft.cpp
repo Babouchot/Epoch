@@ -115,7 +115,20 @@ void FFT::fft(double x[], double y[]) {
       }
     }
   }
-}     
+}
+
+double* FFT::process(double* realArray, double* imaginaryArray){
+  double* result=new double(n);
+  fft(realArray, imaginaryArray);
+  computeModulus(realArray, imaginaryArray, result);
+  return result;
+}
+
+void FFT::computeModulus(double* x, double* y, double* result){
+  for(int i=0; i<n; ++i){
+    result[i]=sqrt(pow(x[i],2) + pow(y[i], 2));
+  }
+}
 
 int FFT::closestTwoPower(int n){
   int i=0;
