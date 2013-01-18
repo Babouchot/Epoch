@@ -15,12 +15,13 @@ class FFT : public Algorithm{
     double* sinus ;
 
   public:
-    FFT(int n);
+    FFT();
     void printReIm(double* re, double* im);
     void beforeAfter(FFT fft, double* re, double* im);
     void fft(double* x, double* y);
     void computeModulus(double* x, double* y, double* result);
-    virtual double* process(double* realArray, double* imaginaryArray);
+    void setSize(int nb);
+    virtual void process(double* realArray, double* imaginaryArray, double* result, int size);
     static int closestTwoPower(int n);
 };
 

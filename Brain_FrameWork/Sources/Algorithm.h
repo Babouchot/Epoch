@@ -4,9 +4,9 @@
 class Algorithm
 {
 	public:
-		Algorithm();
-		virtual double* process(double* realArray, double* imaginaryArray) = 0;
-		~Algorithm();
+		Algorithm(){}
+		virtual void process(double* realArray, double* imaginaryArray, double* result, int size) = 0;
+		~Algorithm(){}
 };
 
 #endif

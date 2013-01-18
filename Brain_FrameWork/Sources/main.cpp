@@ -1,7 +1,7 @@
-#include <string>
 #include <iostream>
 #include <unistd.h>
 #include "ArousalReader.h"
+#include <sstream>
 
 using namespace std;
 
@@ -14,18 +14,26 @@ int main(){
 	cout<<FFT::closestTwoPower(9)<<endl;
 	cout<<FFT::closestTwoPower(42)<<endl;
 	*/
-	ArousalReader ar;
-	ar.initialiseReading();
-	int i=0;
+	FFT fft;
+	ArousalReader ar(&fft);
+	ar.initialiseReading(1);
+	int cpt=0;
 	while(true){
 		try{
 			if(ar.readNextFrequencies()){
-				//Do stuff
+				cout<<cpt<<endl;
+				for(int i=2; i<ar.getChannelList().size(); ++i){
+					cout<<ar.getChannelList()[i]<<endl;
+					vector<double> beta=ar.getBetaWavesFromChannel(i);
+				    ostringstream oss;
+				    oss <<"beta_"<< i <<".cvs";
+				    ar.printArrayToFile(oss.str(), &beta[0], beta.size());
+				}
 			}
 		} catch (ArousalReader::NoSampleFoundException e){
 			//cout<<"No sample read"<<endl;
 		}
-		++i;
+		++cpt;
 		//cout<<i<<endl;
 	}
 	ar.endReading();

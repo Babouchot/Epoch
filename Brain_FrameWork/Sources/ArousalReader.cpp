@@ -6,6 +6,8 @@
 
 using namespace std;
 
+map<int, string> ArousalReader::_channelList;
+
 EE_DataChannel_t targetChannelList[] = {
 		ED_COUNTER,
 		ED_AF3, ED_F7, ED_F3, ED_FC5, ED_T7, 
@@ -16,13 +18,13 @@ EE_DataChannel_t targetChannelList[] = {
 
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
 						secs(0), _postProcessingAlgorithm(postProcess),
-						_postProcessingAlgorithm(preProcess) {
-	_fftSum= *new vector<double>;
-	___readyToCollect=false;
+						_preProcessingAlgorithm(preProcess) {
+	_readyToCollect=false;
 }
 
 void ArousalReader::initialiseReading(int option){
 
+	initialiseChannelList();
 	eEvent = EE_EmoEngineEventCreate();
 	eState = EE_EmoStateCreate();
 	const unsigned short composerPort	= 1726;
@@ -80,12 +82,12 @@ bool ArousalReader::readNextFrequencies(){
 		// Log the EmoState if it has been updated
 		if (eventType == EE_UserAdded) {
 			EE_DataAcquisitionEnable(userID,true);
-			___readyToCollect = true;
+			_readyToCollect = true;
 			cout<<"Ready to collect set to true"<<endl;
 		}
 	}
 
-	if(__readyToCollect){
+	if(_readyToCollect){
 
 		EE_DataUpdateHandle(0, hData);
 		unsigned int nSamplesTaken=0;
@@ -98,7 +100,7 @@ bool ArousalReader::readNextFrequencies(){
 
 			for(int i=0;i<nSamplesTaken;++i){
 				vector<double> result;
-				for (int chan = _indexFirstChannel ; chan<= _indexLastChannel ; chan++) {//pour chaque capteur
+				for (int chan = 0; chan<= sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
 
 					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
 					result.push_back(currentSample[i]);
@@ -106,9 +108,21 @@ bool ArousalReader::readNextFrequencies(){
 				_rawData.push_back(result);
 			}
 
-			if(_rawData.size()>=_samplingRate){
-				_lastRawData = *new vector<vector<double>>(_rawData);
+			if(_rawData.size()>=ArousalReader::samplingRate){
+				cout<<"raw data work \n";
+				_lastRawData.clear();
+				for(int i=0; i<samplingRate; ++i){
+					_lastRawData.push_back(*new vector<double>);
+					for (int chan = 0; chan<= sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
+					 _lastRawData[i].push_back(/*_rawData[i][chan]*/0);
+					}
+				}
+				//_lastRawData = *new vector<vector<double> >(_rawData);
+				printArray(&(_lastRawData[2][9]), 127);
+				
 				_rawData.clear();
+				cout<<"////////////22222222222222222222222222222///////////////\n";
+				printArray(&(_lastRawData[3][4]), 127);
 				return true;
 			}
 
@@ -121,7 +135,8 @@ bool ArousalReader::readNextFrequencies(){
 }
 
 ArousalReader::~ArousalReader(){
-	delete &_fftSum;
+	delete &_rawData;
+	delete &_lastRawData;
 }
 
 void ArousalReader::printArray(double* array, int size){
@@ -138,11 +153,131 @@ void ArousalReader::initialiseArray(double* array, int size){
 	}
 }
 
-		void normalize(double* array);
-		void printArrayToFile(std::string file, double* array);
-		std::vector<double> getBetaWavesFromChannel(int channelIndex);
-		std::vector<double> getAlphaWavesFromChannel(int channelIndex);
-		std::vector<double> getFrequenciesFromChannel(int channelIndex);
-		std::vector<double> getRawDataFromChannel(int channelIndex);
-		std::vector<double> getFrequenciesRangeFromChannel(int begin, int end, int channelIndex);
-		std::map<int, std::string> getChannelList();
+void ArousalReader::normalize(double* array, int size){
+	double med = 0;
+	for(int i=0; i<size; ++i){
+		med+=array[i];
+	}
+	med=med/size;
+	for(int i=0; i<size; ++i){
+		array[i]-=med;
+	}
+}
+
+void ArousalReader::printArrayToFile(string file, double* array, int size){
+	ofstream ofs(file.c_str(),ios::app);
+	for(int i=0; i<size; ++i){
+		ofs<<array[i]<<",";
+	}
+	ofs<<endl;
+}
+
+vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){
+
+	cout<<"test\n";
+	int startBeta=14;//15Hz
+	int endBeta=30;//30Hz
+	vector<double> waveVector=getFrequenciesRangedFromChannel(startBeta, endBeta, channelIndex);
+	normalize(&waveVector[0],endBeta - startBeta);
+	cout<<"fin test\n";
+	return waveVector;
+}
+
+vector<double> ArousalReader::getAlphaWavesFromChannel(int channelIndex){
+
+	int startAlpha=7;//8Hz
+	int endAlpha=13;//13Hz
+	vector<double> waveVector=getFrequenciesRangedFromChannel(startAlpha, endAlpha, channelIndex);
+	normalize(&waveVector[0],endAlpha - startAlpha);
+	return waveVector;
+}
+
+vector<double> ArousalReader::getFrequenciesFromChannel(int channelIndex){
+
+	if(_lastRawData.size()!=samplingRate){
+		throw ArousalReader::NoDataReadException();
+	}
+
+	vector<double> temp=*new vector<double>(2);
+	double * imaginaryArray=new double(samplingRate);
+	double* freq=new double(samplingRate);
+
+	initialiseArray(imaginaryArray, samplingRate);
+	initialiseArray(freq, samplingRate);
+
+	cout<<"channelIndex : "<<channelIndex<< "_lastRawData size "<<_lastRawData.size()<<endl;
+	for(int i=0; i<_lastRawData.size(); ++i){
+		cout<<i<<", \n";
+		cout<<"si "<<_lastRawData[i].size()<<endl;
+		cout<<"val "<<_lastRawData[i][channelIndex]<<endl;
+		printArray(&(_lastRawData[i][channelIndex]), 128);
+		cout<<"after////////////////////////////:\n";
+		temp.push_back(_lastRawData[i][channelIndex]);
+	}
+	cout<<"fin test3 bisbis\n";
+	_postProcessingAlgorithm->process(&temp[0],imaginaryArray, freq, samplingRate);
+	temp.assign(freq, freq+samplingRate);
+
+	normalize(&temp[0], temp.size());
+
+	delete[] imaginaryArray;
+	delete[] freq;
+	cout<<"fin test3\n";
+	return temp;
+}
+
+vector<double> ArousalReader::getRawDataFromChannel(int channelIndex){
+
+	if(_lastRawData.size()==0){
+		throw ArousalReader::NoDataReadException();
+	}
+
+	vector<double> data;
+	for(int i=0; i<_lastRawData.size(); ++i){
+		data.push_back(_lastRawData[i][channelIndex]);
+	}
+
+	return data;
+}
+
+vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end, int channelIndex){
+		cout<<"test2\n";
+	vector<double> freqRange;
+	vector<double> freq = getFrequenciesFromChannel(channelIndex);
+	freqRange.assign(freq.begin()+begin, freq.begin()+end);
+
+	normalize(&freqRange[0], freqRange.size());
+
+	delete &freq;
+		cout<<"fin test2\n";
+	return freqRange;
+}
+
+map<int, string> ArousalReader::getChannelList(){
+	return _channelList;
+}
+
+void ArousalReader::initialiseChannelList(){
+	_channelList[0]= "ED_COUNTER";
+	_channelList[1]= "ED_AF3";
+	_channelList[2]= "ED_F7";
+	_channelList[3]= "ED_F3";
+	_channelList[4]= "ED_FC5";
+	_channelList[5]= "ED_T7";
+	_channelList[6]= "ED_P7";
+	_channelList[7]= "ED_O1";
+	_channelList[8]= "ED_O2";
+	_channelList[9]= "ED_P8";
+	_channelList[10]= "ED_T8"; 
+	_channelList[11]= "ED_FC6";
+	_channelList[12]= "ED_F4";
+	_channelList[13]= "ED_F8";
+	_channelList[14]= "ED_AF4";
+	_channelList[15]= "ED_GYROX";
+	_channelList[16]= "ED_GYROY";
+	_channelList[17]= "ED_TIMESTAMP";
+	_channelList[18]= "ED_FUNC_ID";
+	_channelList[19]= "ED_FUNC_VALUE";
+	_channelList[20]= "ED_MARKER";
+	_channelList[21]= "ED_SYNC_SIGNAL";
+}

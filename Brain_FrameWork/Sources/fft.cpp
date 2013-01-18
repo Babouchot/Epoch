@@ -8,22 +8,26 @@
 using namespace std;
 
 
-FFT::FFT(int N) : n(N) {
+FFT::FFT()  {
 
-  m = (int)(log(n) / log(2));
-
-cosinus = (double*) malloc(n * sizeof(double));
-sinus = (double*) malloc(n * sizeof(double));
- 
-  // Make sure n is a power of 2
-  if(n != (1<<m)) 
-    cerr << "n doit être une puissance de 2 "<< endl;
-
-for(int i=0; i< (n/2); i++) {
-    cosinus[i] = cos(-2*PI*i/n);
-    sinus[i] = sin(-2*PI*i/n);
 }
 
+void FFT::setSize(int nb){
+
+  n=nb;
+  m = (int)(log(n) / log(2));
+
+  cosinus = (double*) malloc(n * sizeof(double));
+  sinus = (double*) malloc(n * sizeof(double));
+   
+    // Make sure n is a power of 2
+  if(n != (1<<m)) 
+      cerr << "n doit être une puissance de 2 "<< endl;
+
+  for(int i=0; i< (n/2); i++) {
+      cosinus[i] = cos(-2*PI*i/n);
+      sinus[i] = sin(-2*PI*i/n);
+  }
 }
 
 void FFT::beforeAfter(FFT fft, double re[], double im[]) {
@@ -117,11 +121,13 @@ void FFT::fft(double x[], double y[]) {
   }
 }
 
-double* FFT::process(double* realArray, double* imaginaryArray){
-  double* result=new double(n);
+void FFT::process(double* realArray, double* imaginaryArray, double* result, int size){
+  setSize(size);
   fft(realArray, imaginaryArray);
   computeModulus(realArray, imaginaryArray, result);
-  return result;
+
+  delete[] sinus;
+  delete[] cosinus;
 }
 
 void FFT::computeModulus(double* x, double* y, double* result){
