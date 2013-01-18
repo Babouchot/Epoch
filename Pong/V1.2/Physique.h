@@ -8,6 +8,8 @@
 class Physique
 {
 	public :
+
+        static int vit;
 		//Fonction qui met à jour les objets
 		static void updateObjets(std::vector<Objet*> &objets);
 		
