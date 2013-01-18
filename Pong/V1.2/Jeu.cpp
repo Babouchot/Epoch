@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Jeu.h"
 #include <sstream>
 #include <string>
-#ifdef __APPLE__MACH
+#ifdef __APPLE__&__MACH
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
@@ -190,7 +190,7 @@ void Jeu::recommence()
     //2eme barre
     o->setType(BARRE);
     o->setVitesse(0);
-    o->setCouleur(2.0,0.12,0.32);
+    o->setCouleur(0 , 0, 1.0);
     o->setTaille(HAUT_BARRE,LARG_BARRE);
     o->setPos(WIDTH - 3*HAUT_BARRE/2, HEIGHT/2 - LARG_BARRE/2);
     ennemi = o;
@@ -243,17 +243,17 @@ inline unsigned int Jeu::getNObjets()
 void Jeu::gereSceneServeur()
 {
 	//Mis a jour des objets
-    if(balle->getVY() > 0)
+    if(balle->getY() + TAILLE_BALLE/2 > ennemi->getY() + LARG_BARRE/2)
     {
         ennemi->setDirVitesse(0.0, 1.0);
         ennemi->setVitesse(2.0);
     }
     else
     {
-        if(balle->getVY() == 0)
+        if(balle->getY() + TAILLE_BALLE/2 == ennemi->getY() + LARG_BARRE/2)
         {
-            ennemi->setDirVitesse(0.0, 0.001);
-            ennemi->setVitesse(0);
+            ennemi->setDirVitesse(1.0, 1.0);
+            ennemi->setVitesse(0.0);
         }
         else
         {

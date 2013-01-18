@@ -2,11 +2,13 @@
 #include <SDL.h>
 
 std::vector<int> Physique::tableau_zones[QUADLIGNE][QUADCOL];
+int Physique::vit = 0;
 
 //Fonction d'initialisation
 bool Physique::init()
 {
 int i,j;
+Physique::vit = 0;
 for(i=0;i<QUADLIGNE;i++)
   for(j=0;j<QUADCOL;j++)
     {
@@ -25,6 +27,8 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 	double x1,x2,y1,y2;
 	
     int nobjets = objets.size();
+
+    vit++;
 
 	for(i=0;i<nobjets;i++)
 		{
@@ -77,7 +81,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				if(objets[res]->getType()!=CERCLE)
 					{
 					objets[i]->setDirVitesse(newvx,newvy);
-                    objets[i]->setVitesse(2 * SDL_GetTicks()/10000 + 1);
+                    objets[i]->setVitesse(3 + Physique::vit/1000.0);
 					}
 				else //Sinon on ajoute la direction (newx, newy)
 					{
@@ -96,7 +100,7 @@ void Physique::updateObjets(std::vector<Objet*> &objets)
 				if(objets[res]->getType()!=CERCLE)
 					{
 					objets[res]->setDirVitesse(newvx,newvy);
-                    objets[res]->setVitesse(2 * SDL_GetTicks()/1000 + 1);
+                    objets[res]->setVitesse(3 + Physique::vit/1000.0);
 					}
 				else    //Sinon on ajoute la direction (newx, newy)
 					{
