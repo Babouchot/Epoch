@@ -1,5 +1,8 @@
 #include "ArousalReader.h"
 #include <cmath>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 using namespace std;
 
@@ -102,11 +105,12 @@ bool ArousalReader::readNextFrequencies(){
 			
 
 			double* result=new double[nSamplesTaken];
+			initialiseArray(result, nSamplesTaken);
 
 			for (int i = _indexFirstChannel ; i<= _indexLastChannel ; i++) {//pour chaque capteur
 
 				EE_DataGet(hData, targetChannelList[i], currentSample, nSamplesTaken);
-				processData(currentSample, result);
+				processData(currentSample, result, nSamplesTaken);
 			}
 
 			//push the new samples into the fftSum
@@ -141,8 +145,8 @@ bool ArousalReader::readNextFrequencies(){
 	return false;
 }
 
-void ArousalReader::processData( double* channelInput, double* result ){
-	for(int i=0; i<sizeof(channelInput)/sizeof(double);++i){
+void ArousalReader::processData( double* channelInput, double* result, int size ){
+	for(int i=0; i<size;++i){
 		result[i]+=channelInput[i];
 	}
 }
@@ -178,20 +182,22 @@ bool ArousalReader::lookForWaves(){
 	cout<<"Fourrier done"<<endl;
 
 	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
-		betaSumRe+=abs(_fftSum[i])/1000;
-		betaSumIr+=abs(imaginaryStuff[i])/1000;
+		betaSumRe+=abs(_fftSum[i]);
+		betaSumIr+=abs(imaginaryStuff[i]);
 	}
 
 	for(int i=betaFirstIndex; i<=betaLastIndex; ++i){
-		alphaSumRe+=abs(_fftSum[i])/1000;
-		alphaSumIr+=abs(imaginaryStuff[i])/1000;
+		alphaSumRe+=abs(_fftSum[i]);
+		alphaSumIr+=abs(imaginaryStuff[i]);
 	}
 
 	cout<<"Beta SumRe "<<betaSumRe<<endl;
 	cout<<"Beta SumIr "<<betaSumIr<<endl;
 	cout<<"Alpha SumRe "<<alphaSumRe<<endl;
 	cout<<"Alpha SumIr "<<alphaSumIr<<endl;
-
+	ofstream ofs("res.cvs", ios::app);
+	ofs<<betaSumRe<<","<<betaSumIr<<","<<alphaSumRe<<","<<alphaSumIr<<endl;
+	ofs.close();
 	delete[] imaginaryStuff;
 	cleanFftSum();
 

@@ -42,7 +42,7 @@ class ArousalReader {
 
 		bool readNextFrequencies();
 
-		void processData( double* channelInput, double* result);
+		void processData( double* channelInput, double* result, int size);
 		void cleanFftSum();
 		bool lookForWaves();
 		~ArousalReader();
