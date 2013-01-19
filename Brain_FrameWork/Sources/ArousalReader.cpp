@@ -100,7 +100,7 @@ bool ArousalReader::readNextFrequencies(){
 
 			for(int i=0;i<nSamplesTaken;++i){
 				vector<double> result;
-				for (int chan = 0; chan<= sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
+				for (int chan = 0; chan< sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
 
 					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
 					result.push_back(currentSample[i]);
@@ -109,20 +109,9 @@ bool ArousalReader::readNextFrequencies(){
 			}
 
 			if(_rawData.size()>=ArousalReader::samplingRate){
-				cout<<"raw data work \n";
 				_lastRawData.clear();
-				for(int i=0; i<samplingRate; ++i){
-					_lastRawData.push_back(*new vector<double>);
-					for (int chan = 0; chan<= sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
-					 _lastRawData[i].push_back(/*_rawData[i][chan]*/0);
-					}
-				}
-				//_lastRawData = *new vector<vector<double> >(_rawData);
-				printArray(&(_lastRawData[2][9]), 127);
-				
+				_lastRawData=*new vector< vector<double> >(_rawData);
 				_rawData.clear();
-				cout<<"////////////22222222222222222222222222222///////////////\n";
-				printArray(&(_lastRawData[3][4]), 127);
 				return true;
 			}
 
@@ -148,8 +137,8 @@ void ArousalReader::printArray(double* array, int size){
 }
 
 void ArousalReader::initialiseArray(double* array, int size){
-		for(int i=0;i<size;++i){
-		array[i]=0.0;
+	for(int i=0;i<size;++i){
+		array[i]=0.0f;
 	}
 }
 
@@ -174,12 +163,10 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 
 vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){
 
-	cout<<"test\n";
 	int startBeta=14;//15Hz
 	int endBeta=30;//30Hz
 	vector<double> waveVector=getFrequenciesRangedFromChannel(startBeta, endBeta, channelIndex);
 	normalize(&waveVector[0],endBeta - startBeta);
-	cout<<"fin test\n";
 	return waveVector;
 }
 
@@ -198,31 +185,25 @@ vector<double> ArousalReader::getFrequenciesFromChannel(int channelIndex){
 		throw ArousalReader::NoDataReadException();
 	}
 
-	vector<double> temp=*new vector<double>(2);
-	double * imaginaryArray=new double(samplingRate);
-	double* freq=new double(samplingRate);
+	vector<double> temp;
+
+	double * imaginaryArray=new double[samplingRate];
+	double* freq=new double[samplingRate];
 
 	initialiseArray(imaginaryArray, samplingRate);
 	initialiseArray(freq, samplingRate);
 
-	cout<<"channelIndex : "<<channelIndex<< "_lastRawData size "<<_lastRawData.size()<<endl;
 	for(int i=0; i<_lastRawData.size(); ++i){
-		cout<<i<<", \n";
-		cout<<"si "<<_lastRawData[i].size()<<endl;
-		cout<<"val "<<_lastRawData[i][channelIndex]<<endl;
-		printArray(&(_lastRawData[i][channelIndex]), 128);
-		cout<<"after////////////////////////////:\n";
 		temp.push_back(_lastRawData[i][channelIndex]);
 	}
-	cout<<"fin test3 bisbis\n";
 	_postProcessingAlgorithm->process(&temp[0],imaginaryArray, freq, samplingRate);
+	cout<<"OMG, it's spiderman !";
 	temp.assign(freq, freq+samplingRate);
 
 	normalize(&temp[0], temp.size());
 
 	delete[] imaginaryArray;
 	delete[] freq;
-	cout<<"fin test3\n";
 	return temp;
 }
 
@@ -241,15 +222,14 @@ vector<double> ArousalReader::getRawDataFromChannel(int channelIndex){
 }
 
 vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end, int channelIndex){
-		cout<<"test2\n";
+
 	vector<double> freqRange;
 	vector<double> freq = getFrequenciesFromChannel(channelIndex);
 	freqRange.assign(freq.begin()+begin, freq.begin()+end);
 
 	normalize(&freqRange[0], freqRange.size());
 
-	delete &freq;
-		cout<<"fin test2\n";
+	//delete &freq;
 	return freqRange;
 }
 
