@@ -5,7 +5,7 @@ class Algorithm
 {
 	public:
 		Algorithm(){}
-		virtual void process(double* realArray, double* imaginaryArray, double* result, int size) = 0;
+		virtual void process(double* realArray, double* result, int size) = 0;
 		~Algorithm(){}
 };
 

@@ -17,9 +17,20 @@ EE_DataChannel_t targetChannelList[] = {
 	};
 
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
-						secs(0), _postProcessingAlgorithm(postProcess),
-						_preProcessingAlgorithm(preProcess) {
-	_readyToCollect=false;
+						_postProcessingAlgorithm(postProcess),
+						_preProcessingAlgorithm(preProcess),
+						_normalizationAlgorithm(NULL),
+						_readyToCollect(false),
+						secs(0), userID(0) {
+}
+
+ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algorithm* normalize) : 
+						_postProcessingAlgorithm(postProcess),
+						_preProcessingAlgorithm(preProcess),
+						_normalizationAlgorithm(normalize),
+						_readyToCollect(false),
+						secs(0), userID(0)  {
+
 }
 
 void ArousalReader::initialiseReading(int option){
@@ -111,6 +122,13 @@ bool ArousalReader::readNextFrequencies(){
 			if(_rawData.size()>=ArousalReader::samplingRate){
 				_lastRawData.clear();
 				_lastRawData=*new vector< vector<double> >(_rawData);
+				if( _preProcessingAlgorithm!=NULL){
+					double* result=new double[samplingRate];
+					for(int i=0; i<samplingRate; ++i){
+						_preProcessingAlgorithm->process(&(_lastRawData[i][0]), result, samplingRate);
+						_lastRawData[i].assign(result, result+samplingRate);
+					}
+				}
 				_rawData.clear();
 				return true;
 			}
@@ -142,17 +160,6 @@ void ArousalReader::initialiseArray(double* array, int size){
 	}
 }
 
-void ArousalReader::normalize(double* array, int size){
-	double med = 0;
-	for(int i=0; i<size; ++i){
-		med+=array[i];
-	}
-	med=med/size;
-	for(int i=0; i<size; ++i){
-		array[i]-=med;
-	}
-}
-
 void ArousalReader::printArrayToFile(string file, double* array, int size){
 	ofstream ofs(file.c_str(),ios::app);
 	for(int i=0; i<size; ++i){
@@ -163,19 +170,13 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 
 vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){
 
-	int startBeta=14;//15Hz
-	int endBeta=30;//30Hz
 	vector<double> waveVector=getFrequenciesRangedFromChannel(startBeta, endBeta, channelIndex);
-	normalize(&waveVector[0],endBeta - startBeta);
 	return waveVector;
 }
 
 vector<double> ArousalReader::getAlphaWavesFromChannel(int channelIndex){
 
-	int startAlpha=7;//8Hz
-	int endAlpha=13;//13Hz
 	vector<double> waveVector=getFrequenciesRangedFromChannel(startAlpha, endAlpha, channelIndex);
-	normalize(&waveVector[0],endAlpha - startAlpha);
 	return waveVector;
 }
 
@@ -186,23 +187,23 @@ vector<double> ArousalReader::getFrequenciesFromChannel(int channelIndex){
 	}
 
 	vector<double> temp;
-
-	double * imaginaryArray=new double[samplingRate];
 	double* freq=new double[samplingRate];
-
-	initialiseArray(imaginaryArray, samplingRate);
 	initialiseArray(freq, samplingRate);
 
 	for(int i=0; i<_lastRawData.size(); ++i){
 		temp.push_back(_lastRawData[i][channelIndex]);
 	}
-	_postProcessingAlgorithm->process(&temp[0],imaginaryArray, freq, samplingRate);
-	cout<<"OMG, it's spiderman !";
+	_postProcessingAlgorithm->process(&temp[0], freq, samplingRate);
+
+	if(_normalizationAlgorithm!=NULL){
+		double* result=new double[samplingRate];
+		_normalizationAlgorithm->process(freq, result, samplingRate);
+		delete[] freq;
+		freq=result;
+	}
+
 	temp.assign(freq, freq+samplingRate);
 
-	normalize(&temp[0], temp.size());
-
-	delete[] imaginaryArray;
 	delete[] freq;
 	return temp;
 }
@@ -227,7 +228,7 @@ vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end
 	vector<double> freq = getFrequenciesFromChannel(channelIndex);
 	freqRange.assign(freq.begin()+begin, freq.begin()+end);
 
-	normalize(&freqRange[0], freqRange.size());
+	//normalize(&freqRange[0], freqRange.size());
 
 	//delete &freq;
 	return freqRange;

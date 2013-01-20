@@ -22,7 +22,7 @@ int main(){
 		try{
 			if(ar.readNextFrequencies()){
 				cout<<cpt<<endl;
-				for(int i=2; i<ar.getChannelList().size(); ++i){
+				for(int i=0; i<ar.getChannelList().size(); ++i){
 					vector<double> beta=ar.getBetaWavesFromChannel(i);
 				    ostringstream oss;
 				    oss <<"beta_"<< i <<".cvs";

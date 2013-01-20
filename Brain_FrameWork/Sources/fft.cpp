@@ -121,11 +121,16 @@ void FFT::fft(double x[], double y[]) {
   }
 }
 
-void FFT::process(double* realArray, double* imaginaryArray, double* result, int size){
+void FFT::process(double* realArray, double* result, int size){
   setSize(size);
+  double* imaginaryArray=new double[size];
+  for(int i=0; i<size; ++i){
+    imaginaryArray[i]=0;
+  }
   fft(realArray, imaginaryArray);
   computeModulus(realArray, imaginaryArray, result);
 
+  delete[] imaginaryArray;
   delete[] sinus;
   delete[] cosinus;
 }
