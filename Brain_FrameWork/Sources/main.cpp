@@ -6,22 +6,17 @@
 using namespace std;
 
 int main(){
-	cout<<"gogoggo\n";
-	/*
-	cout<<FFT::closestTwoPower(4)<<endl;
-	cout<<FFT::closestTwoPower(8)<<endl;
-	cout<<FFT::closestTwoPower(7)<<endl;
-	cout<<FFT::closestTwoPower(9)<<endl;
-	cout<<FFT::closestTwoPower(42)<<endl;
-	*/
+	cout<<"Main application starting\n";
+
 	FFT fft;
 	ArousalReader ar(&fft);
 	ar.initialiseReading();
 	int cpt=0;
 	while(true){
-
-		if(ar.readNextFrequencies()){
+		try {
+			if(ar.readNextFrequencies()){
 			cout<<cpt<<endl;
+			++cpt;
 			for(int i=0; i<ar.getChannelMap().size(); ++i){
 				vector<double> beta=ar.getBetaWavesFromChannel(i);
 			    ostringstream oss;
@@ -29,9 +24,10 @@ int main(){
 			    ar.printArrayToFile(oss.str(), &beta[0], beta.size());
 			}
 		}
+		} catch (ArousalReader::PacketLostException loss) {
+			cout<<"Packet Lost \n";
+		}
 
-		++cpt;
-		//cout<<i<<endl;
 	}
 	ar.endReading();
 	return 0;

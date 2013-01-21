@@ -21,7 +21,7 @@ class FFT : public Algorithm{
     void fft(double* x, double* y);
     void computeModulus(double* x, double* y, double* result);
     void setSize(int nb);
-    virtual void process(double* realArray, double* result, int size);
+    virtual std::vector<std::vector<double> > process(const std::vector<std::vector<double> >& data);
     static int closestTwoPower(int n);
 };
 
