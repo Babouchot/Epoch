@@ -1,8 +1,8 @@
-
 /*
 Un pong en SDL/OpenGL
 A pong in SDL/OpenGL
-Copyright (C) 2006 BEYLER Jean Christophe
+Thanks to BEYLER Jean Christophe
+Modifications made by MAUGARD Matthieu
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -87,11 +87,8 @@ int main(int argc, char **argv)
                     moteur.fin();
                     break;
                 case SDL_KEYDOWN:
-		  moteur.clavier(event.key.keysym.sym,1);
-		  break;
-                case SDL_KEYUP:
-		  if (event.key.keysym.sym != SDLK_q)
-                    moteur.clavier(event.key.keysym.sym,0);
+            		moteur.clavier(event.key.keysym.sym);
+                    break;
 		  break;
                 default:
                     break;

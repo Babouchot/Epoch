@@ -1,8 +1,8 @@
-
 /*
 Un pong en SDL/OpenGL
 A pong in SDL/OpenGL
-Copyright (C) 2006 BEYLER Jean Christophe
+Thanks to BEYLER Jean Christophe
+Modifications made by MAUGARD Matthieu
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -207,6 +207,18 @@ void Jeu::recommence()
     addObjet(b);
 }
 
+void Jeu::reInit()
+{
+    Physique::init();
+    barre->setPos(HAUT_BARRE/2, HEIGHT/2 - LARG_BARRE/2);
+    barre->setVitesse(0);
+    ennemi->setPos(WIDTH - 3*HAUT_BARRE/2, HEIGHT/2 - LARG_BARRE/2);
+    ennemi->setVitesse(0);
+    balle->setPos(WIDTH/2 - TAILLE_BALLE/2, HEIGHT/2 - TAILLE_BALLE/2);
+    balle->setVitesse(0);
+    pouet = true;
+}
+
 int Jeu::addObjet(Objet* o)
 {
     if(getNObjets()<MAX_BALLES)
@@ -266,7 +278,7 @@ void Jeu::gereSceneServeur()
 }
 
 //Gestion du clavier
-bool Jeu::clavier(unsigned int k, int i)
+bool Jeu::clavier(unsigned int k)
 {
     switch(k)
     {
@@ -282,42 +294,31 @@ bool Jeu::clavier(unsigned int k, int i)
                 pouet = !pouet;
             }
             return true;
+        
         case SDLK_DOWN:
-            if(i)
-            {
-                if(barre->getY() + LARG_BARRE <= HEIGHT)
-                {
-                    barre->setDirVitesse(0.0, 1.0);
-                    barre->setVitesse(2.0);
-                }
-                else
-                {
-                    barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
-                }
-            }
-            else
-            {
-                barre->setVitesse(0);
-            }
-            return true;
+        if(barre->getY() + LARG_BARRE <= HEIGHT)
+        {
+            barre->setDirVitesse(0.0, 1.0);
+            barre->setVitesse(2.0);
+        }
+        else
+        {
+            barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
+        }
+        return true;
+        
         case SDLK_UP:
-        if(i)
-            {
-                if(barre->getY() + LARG_BARRE <= HEIGHT)
-                {
-                    barre->setDirVitesse(0.0, -1.0);
-                    barre->setVitesse(2.0);
-                }
-                else
-                {
-                    barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
-                }
-            }
-            else
-            {
-                barre->setVitesse(0);
-            }
-            return true;
+        if(barre->getY() + LARG_BARRE <= HEIGHT)
+        {
+            barre->setDirVitesse(0.0, -1.0);
+            barre->setVitesse(2.0);
+        }
+        else
+        {
+            barre->setPos(barre->getX(), HEIGHT - LARG_BARRE);
+        }
+        return true;
+        
         default:
             return false;
     }
@@ -343,12 +344,15 @@ void Jeu::toucheObjets()
 void Jeu::point(bool i)
 {
   if (i) {
-    if (j1 == 9) {
+    if (j1 == 10) {
       std::cout << "Bravo vous avez gagné ! :)" << std::endl;
       moteur.initJeu();
     }
-    else 
+    else
+    {
       j1++;
+      moteur.reInit();
+    }
   }
   else {
     if (j2 == 9) {
@@ -356,7 +360,10 @@ void Jeu::point(bool i)
       moteur.initJeu();
     }
     else
+    {
       j2++;
+      moteur.reInit();
+    }
   }
 }
 

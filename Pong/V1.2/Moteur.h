@@ -7,7 +7,8 @@ class Moteur;
 /*
 Un pong en SDL/OpenGL
 A pong in SDL/OpenGL
-Copyright (C) 2006 BEYLER Jean Christophe
+Thanks to BEYLER Jean Christophe
+Modifications made by MAUGARD Matthieu
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -59,7 +60,7 @@ class Moteur
     bool init();
 
     //Gestion du clavier
-    void clavier(unsigned int k ,int i);
+    void clavier(unsigned int k);
 
     //Est-ce que la partie est finie ?
     bool estFini();
@@ -74,6 +75,8 @@ class Moteur
 
     //Est-ce que le jeu est en cours
     bool jeuEnCours();
+
+    void reInit();
 };
 
 #endif

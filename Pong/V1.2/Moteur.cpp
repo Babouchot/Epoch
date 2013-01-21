@@ -1,8 +1,8 @@
-
 /*
 Un pong en SDL/OpenGL
 A pong in SDL/OpenGL
-Copyright (C) 2006 BEYLER Jean Christophe
+Thanks to BEYLER Jean Christophe
+Modifications made by MAUGARD Matthieu
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -70,7 +70,7 @@ bool Moteur::init()
 	return jeu->init() && menu->init("data/menu.txt");
 }
 
-void Moteur::clavier(unsigned int k, int i)
+void Moteur::clavier(unsigned int k)
 {
     int gere=false;
     if(dans_menu)
@@ -79,7 +79,7 @@ void Moteur::clavier(unsigned int k, int i)
     }
     else 
     {
-        gere = jeu->clavier(k, i);
+        gere = jeu->clavier(k);
     }
 
     //Si la touche n'est pas geree
@@ -126,5 +126,10 @@ void Moteur::initJeu()
 bool Moteur::jeuEnCours()
 {
     return jeu->enCours();
+}
+
+void Moteur::reInit()
+{
+    jeu->reInit();
 }
 

@@ -8,7 +8,8 @@ class Jeu;
 /*
 Un pong en SDL/OpenGL
 A pong in SDL/OpenGL
-Copyright (C) 2006 BEYLER Jean Christophe
+Thanks to BEYLER Jean Christophe
+Modifications made by MAUGARD Matthieu
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -25,7 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-#ifdef __APPLE__MACH
+#ifdef __APPLE__&__MACH
 #include <OpenGL/glut.h>
 #else
 #include <GL/glut.h>
@@ -85,7 +86,7 @@ class Jeu
 		void gereSceneServeur();
 
         //Gestion du clavier
-        bool clavier(unsigned int, int);
+        bool clavier(unsigned int);
 
         //Recommence la partie
         void recommence();
@@ -101,6 +102,8 @@ class Jeu
         void afficheScore();
 
         void afficheStart();
-       
+
+        void reInit();
+
 };
 #endif
