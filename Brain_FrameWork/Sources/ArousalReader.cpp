@@ -67,42 +67,21 @@ ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algo
 	}
 }
 
-void ArousalReader::initialiseReading(int option){
+void ArousalReader::initialiseReading(){
 
 	initialiseChannelList();
 	eEvent = EE_EmoEngineEventCreate();
 	eState = EE_EmoStateCreate();
 	const unsigned short composerPort	= 1726;
-	switch (option) {
-		case 0:
-		{
-			if (EE_EngineConnect() != EDK_OK) {
-				cout <<"Emotiv Engine start up failed"<<endl;
-				throw ArousalReader::EmotivConnectException();
-			}
-			else
-			{
-				cout<<"Emotiv Engine start up sucssessful."<<endl;
-			}
-			break;
-		}
-		case 1:
-		{
-			cout << "Target IP of EmoComposer? [127.0.0.1] "<<endl;
-			string input("127.0.0.1");
 
-			if (EE_EngineRemoteConnect(input.c_str(), composerPort) != EDK_OK) {
-				string errMsg = "Cannot connect to EmoComposer on [" + input + "]";
-				cout<< errMsg.c_str();
-			}
-			break;
-		}
-		default:
-			cout<< "Invalid option..."<<endl;
-			throw ArousalReader::WrongInitializationException();
-			break;
+	if (EE_EngineConnect() != EDK_OK) {
+		cout <<"Emotiv Engine start up failed"<<endl;
+		throw ArousalReader::EmotivConnectException();
 	}
-
+	else
+	{
+		cout<<"Emotiv Engine start up sucssessful."<<endl;
+	}
 
     hData = EE_DataCreate();
 	EE_DataSetBufferSizeInSec(secs);
@@ -173,8 +152,10 @@ bool ArousalReader::readNextFrequencies(){
 }
 
 ArousalReader::~ArousalReader(){
-	delete &_rawData;
-	delete &_lastRawData;
+	_rawData.clear();
+	_lastRawData.clear();
+	//delete &_rawData;
+	//delete &_lastRawData;
 }
 
 void ArousalReader::printArray(double* array, int size){
@@ -261,7 +242,8 @@ vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end
 
 	//normalize(&freqRange[0], freqRange.size());
 
-	delete &freq;
+	freq.clear();
+	//delete &freq
 	return freqRange;
 }
 

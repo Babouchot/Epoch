@@ -65,10 +65,8 @@ class ArousalReader {
 
 		/*
 		* Connect to the headset or the emoComposer and initialize the reading variables
-		* The parameter option should be 0 for a connection to the headset and 1 to connect to the 
-		* emoComposer
 		*/
-		void initialiseReading(int option);
+		void initialiseReading();
 
 		/*
 		* Clean the reading variables and disconnect from the headset
@@ -134,11 +132,6 @@ class ArousalReader {
 		* Thrown when the application can't connect to the Emotiv Engine
 		*/
 		class EmotivConnectException{};
-		
-		/*
-		* Thrown when a wrong initialization option is given
-		*/
-		class WrongInitializationException{};
 		
 		/*
 		* Thrown when trying to get data before the first full second have bee read
