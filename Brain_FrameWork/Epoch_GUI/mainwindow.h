@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "ArousalReader.h"
+#include "fft.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +26,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    ArousalReader reader;
 };
 
 #endif // MAINWINDOW_H
