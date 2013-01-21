@@ -16,23 +16,20 @@ int main(){
 	*/
 	FFT fft;
 	ArousalReader ar(&fft);
-	ar.initialiseReading(1);
+	ar.initialiseReading();
 	int cpt=0;
 	while(true){
-		try{
-			if(ar.readNextFrequencies()){
-				cout<<cpt<<endl;
-				for(int i=2; i<ar.getChannelList().size(); ++i){
-					cout<<ar.getChannelList()[i]<<endl;
-					vector<double> beta=ar.getBetaWavesFromChannel(i);
-				    ostringstream oss;
-				    oss <<"beta_"<< i <<".cvs";
-				    ar.printArrayToFile(oss.str(), &beta[0], beta.size());
-				}
+
+		if(ar.readNextFrequencies()){
+			cout<<cpt<<endl;
+			for(int i=0; i<ar.getChannelMap().size(); ++i){
+				vector<double> beta=ar.getBetaWavesFromChannel(i);
+			    ostringstream oss;
+			    oss <<"beta_"<< i <<".cvs";
+			    ar.printArrayToFile(oss.str(), &beta[0], beta.size());
 			}
-		} catch (ArousalReader::NoSampleFoundException e){
-			//cout<<"No sample read"<<endl;
 		}
+
 		++cpt;
 		//cout<<i<<endl;
 	}
