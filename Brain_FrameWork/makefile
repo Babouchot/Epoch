@@ -5,7 +5,7 @@ ALL = Run.exe
 
 
 Run.exe : ArousalReader.o fft.o main.o 
-	-g++ -Wall -g -O0 -o Run.exe ArousalReader.o fft.o main.o lib/*.so*
+	-g++ -Wall -g -O0 -o Run.exe ArousalReader.o fft.o main.o ../lib/*.so*
 	-[ -e "Build" ] || mkdir "Build"
 	-mv *.o *.exe Build
 
