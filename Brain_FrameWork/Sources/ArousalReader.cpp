@@ -16,12 +16,44 @@ EE_DataChannel_t targetChannelList[] = {
 		ED_FUNC_ID, ED_FUNC_VALUE, ED_MARKER, ED_SYNC_SIGNAL
 	};
 
+////////////////////functions////////////////////
+
+unsigned int channelSize(){
+	return sizeof(targetChannelList)/sizeof(EE_DataChannel_t);
+}
+
+void ArousalReader::applyPreProcessing(){
+	double* result=new double[samplingRate];
+	double* temp=new double[samplingRate];
+
+	for(int chan=0; chan<channelSize(); ++chan){
+
+		for(int i=0; i<samplingRate; ++i){
+			temp[i]=_lastRawData[i][chan];
+		}
+
+		_preProcessingAlgorithm->process(temp, result, samplingRate);
+
+		for(int i=0; i<samplingRate; ++i){
+			_lastRawData[i][chan]=result[i];
+		}
+	}
+
+	delete[] temp;
+	delete[] result;
+}
+
+/////////////////member functions//////////////////
+
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
 						_postProcessingAlgorithm(postProcess),
 						_preProcessingAlgorithm(preProcess),
 						_normalizationAlgorithm(NULL),
 						_readyToCollect(false),
 						secs(0), userID(0) {
+	if(_channelList.size()==0){
+		initialiseChannelList();
+	}
 }
 
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algorithm* normalize) : 
@@ -30,7 +62,9 @@ ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algo
 						_normalizationAlgorithm(normalize),
 						_readyToCollect(false),
 						secs(0), userID(0)  {
-
+	if(_channelList.size()==0){
+		initialiseChannelList();
+	}
 }
 
 void ArousalReader::initialiseReading(int option){
@@ -40,7 +74,7 @@ void ArousalReader::initialiseReading(int option){
 	eState = EE_EmoStateCreate();
 	const unsigned short composerPort	= 1726;
 	switch (option) {
-		case 1:
+		case 0:
 		{
 			if (EE_EngineConnect() != EDK_OK) {
 				cout <<"Emotiv Engine start up failed"<<endl;
@@ -52,7 +86,7 @@ void ArousalReader::initialiseReading(int option){
 			}
 			break;
 		}
-		case 2:
+		case 1:
 		{
 			cout << "Target IP of EmoComposer? [127.0.0.1] "<<endl;
 			string input("127.0.0.1");
@@ -65,7 +99,7 @@ void ArousalReader::initialiseReading(int option){
 		}
 		default:
 			cout<< "Invalid option..."<<endl;
-			throw ArousalReader::InitialisationFailureException();
+			throw ArousalReader::WrongInitializationException();
 			break;
 	}
 
@@ -111,7 +145,7 @@ bool ArousalReader::readNextFrequencies(){
 
 			for(int i=0;i<nSamplesTaken;++i){
 				vector<double> result;
-				for (int chan = 0; chan< sizeof(targetChannelList)/sizeof(EE_DataChannel_t); chan++) {//pour chaque capteur
+				for (int chan = 0; chan<channelSize(); chan++) {//pour chaque capteur
 
 					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
 					result.push_back(currentSample[i]);
@@ -120,22 +154,19 @@ bool ArousalReader::readNextFrequencies(){
 			}
 
 			if(_rawData.size()>=ArousalReader::samplingRate){
+
 				_lastRawData.clear();
-				_lastRawData=*new vector< vector<double> >(_rawData);
+				//_lastRawData=*new vector< vector<double> >(_rawData);
+				_lastRawData=_rawData;
+
 				if( _preProcessingAlgorithm!=NULL){
-					double* result=new double[samplingRate];
-					for(int i=0; i<samplingRate; ++i){
-						_preProcessingAlgorithm->process(&(_lastRawData[i][0]), result, samplingRate);
-						_lastRawData[i].assign(result, result+samplingRate);
-					}
+					applyPreProcessing();
 				}
 				_rawData.clear();
 				return true;
 			}
 
 			delete[] currentSample;
-		} else {
-			throw ArousalReader::NoSampleFoundException();
 		}
 	}
 	return false;
@@ -230,11 +261,11 @@ vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end
 
 	//normalize(&freqRange[0], freqRange.size());
 
-	//delete &freq;
+	delete &freq;
 	return freqRange;
 }
 
-map<int, string> ArousalReader::getChannelList(){
+map<int, string> ArousalReader::getChannelMap(){
 	return _channelList;
 }
 
