@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>451</height>
+    <width>856</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -36,48 +36,34 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <layout class="QHBoxLayout" name="startFreq">
-          <item>
-           <widget class="QLabel" name="labelStart">
-            <property name="text">
-             <string>Start frequency (Hz):</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxStart">
-            <property name="maximum">
-             <number>63</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="endFreq">
-          <item>
-           <widget class="QLabel" name="labelEnd">
-            <property name="text">
-             <string>End frequency (Hz):</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxEnd">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>64</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
          <widget class="QCustomPlot" name="FreqCustomPlot" native="true"/>
         </item>
        </layout>
+      </widget>
+      <widget class="QWidget" name="rawTab">
+       <attribute name="title">
+        <string>Raw data</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QCustomPlot" name="rawCustomPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="counterTab">
+       <attribute name="title">
+        <string>Counter</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QCustomPlot" name="counterCustomPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="histTab">
+       <attribute name="title">
+        <string>Alpha/Beta waves</string>
+       </attribute>
       </widget>
       <widget class="QWidget" name="logTab">
        <attribute name="title">
@@ -94,11 +80,11 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>408</width>
-             <height>355</height>
+             <width>499</width>
+             <height>288</height>
             </rect>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QTextBrowser" name="log">
               <property name="minimumSize">
@@ -112,6 +98,13 @@
                 <width>390</width>
                 <height>16777215</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="clearLogButton">
+              <property name="text">
+               <string>Clear log</string>
               </property>
              </widget>
             </item>
@@ -166,17 +159,48 @@
       <item row="2" column="1">
        <widget class="QComboBox" name="channelComboBox"/>
       </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QPushButton" name="startAcqButton">
         <property name="text">
          <string>Start</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="5" column="1">
        <widget class="QPushButton" name="StopAcqButton">
         <property name="text">
          <string>Stop</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="spinBoxEnd">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>64</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelEnd">
+        <property name="text">
+         <string>End frequency (Hz):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="spinBoxStart">
+        <property name="maximum">
+         <number>63</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelStart">
+        <property name="text">
+         <string>Start frequency (Hz):</string>
         </property>
        </widget>
       </item>
@@ -189,7 +213,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>888</width>
+     <width>856</width>
      <height>25</height>
     </rect>
    </property>

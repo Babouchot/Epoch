@@ -27,6 +27,14 @@ private slots:
 
     void on_StopAcqButton_clicked();
 
+    void on_spinBoxStart_valueChanged(int arg1);
+
+    void on_spinBoxEnd_valueChanged(int arg1);
+
+    void on_channelComboBox_currentIndexChanged(int index);
+
+    void on_clearLogButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ArousalReader reader;
@@ -35,9 +43,14 @@ private:
     // plot vectors
     std::vector<double> xPositions;
     std::vector<double> yPositions;
+    std::vector<double> rawDataVector;
+    std::vector<double> xRawDataVector;
+
+    void reset(bool);
 
     bool acquisition;
     void updateGraphs();
+    void renderSpinners();
 };
 
 #endif // MAINWINDOW_H

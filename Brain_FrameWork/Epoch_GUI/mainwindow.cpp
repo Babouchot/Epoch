@@ -37,6 +37,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     freqPlot->replot();
 
+    QCustomPlot* rawPlot = ui->rawCustomPlot;
+    rawPlot->addGraph();
+    rawPlot->replot();
+
 }
 
 MainWindow::~MainWindow()
@@ -50,14 +54,16 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionQuit_triggered()
 {
     delete this;
-    //exit(0);
+    exit(0);
 }
 
 void MainWindow::on_actionOpen_window_triggered()
 {
+    /*
     MainWindow* w = new MainWindow();
     daughters.push_back(w);
     w->show();
+    */
 }
 
 void MainWindow::on_startAcqButton_clicked()
@@ -72,6 +78,7 @@ void MainWindow::on_startAcqButton_clicked()
 }
 
 void MainWindow::renderGraphs() {
+    renderSpinners();
     if (acquisition) {
         if (reader.readNextFrequencies()) {
             //ui->log->append("frequencies acquisition successfull");
@@ -84,13 +91,17 @@ void MainWindow::renderGraphs() {
     }
 }
 
+void MainWindow::renderSpinners() {
+    ui->spinBoxStart->setMaximum(ui->spinBoxEnd->value()-1);
+    ui->spinBoxEnd->setMinimum(ui->spinBoxStart->value()+1);
+}
+
 void MainWindow::on_StopAcqButton_clicked()
 {
     if (acquisition) {
         reader.endReading();
         acquisition = false;
-        xPositions.clear();
-        yPositions.clear();
+        reset(false);
         ui->log->append("reading stopped");
     }
     else {
@@ -109,32 +120,56 @@ void MainWindow::updateGraphs() {
     int endFreq = ui->spinBoxEnd->value();
 
     try {
-        //std::cout << "Dans le try" << std::endl;
+
         std::vector<double> amplitudes = reader.getFrequenciesRangedFromChannel(startFreq,
                                                                                 endFreq,
                                                                                 ui->channelComboBox->currentIndex());
         std::vector<double> fft = reader.getFrequenciesFromChannel(ui->channelComboBox->currentIndex());
+        std::vector<double> rawData = reader.getRawDataFromChannel(ui->channelComboBox->currentIndex());
+        //std::vector<double> counter = reader.getRawDataFromChannel(0);
 
         int newValue=0;
+
         for (int i = 0; i < amplitudes.size(); ++i) {
             newValue += amplitudes[i];
         }
+
+        /*
+        if (rawDataVector.size() > 5*128) {
+            rawDataVector.erase(rawDataVector.begin(),rawDataVector.begin()+128);
+            xRawDataVector.erase(xRawDataVector.begin(),xRawDataVector.begin()+128);
+        }*/
+        for (int i = 0; i < rawData.size(); ++i) {
+            rawDataVector.push_back(rawData[i]);
+            xRawDataVector.push_back(xRawDataVector.size());
+        }
+
         xPositions.push_back(xPositions.size());
         yPositions.push_back(newValue);
+
+
         QVector<double> x(xPositions.size());
         QVector<double> y(yPositions.size());
+
+        QVector<double> QRawDataVector(rawDataVector.size());
+        QVector<double> QXRawDataVector(xRawDataVector.size());
 
         for (int i = 0; i < xPositions.size(); ++i) {
             x[i] = xPositions[i];
             y[i] = yPositions[i];
         }
 
-        std::stringstream stream;
+        for (int i = 0; i < rawDataVector.size(); ++i) {
+            QRawDataVector[i] = rawDataVector[i];
+            QXRawDataVector[i] = xRawDataVector[i];
+        }
+
+        /*std::stringstream stream;
         stream << "x[" << x.size()-1 << "] = " << xPositions[xPositions.size()-1] << "; " << "y[" << y.size()-1 << "] = " << yPositions[yPositions.size()-1];
         stream << std::endl << newValue;
         char* ss = &stream.str()[0];
         ui->log->append(ss);
-
+        */
 
         QVector<double> xFFT(fft.size()/2);
         QVector<double> yFFT(fft.size()/2);
@@ -146,22 +181,60 @@ void MainWindow::updateGraphs() {
 
         QCustomPlot* freqPlot = ui->FreqCustomPlot;
         QCustomPlot* fftPlot = ui->FFTCustomPlot;
+        QCustomPlot* rawPlot = ui->rawCustomPlot;
 
         freqPlot->graph(0)->setData(x,y);
         fftPlot->graph(0)->setData(xFFT, yFFT);
+        rawPlot->graph(0)->setData(QXRawDataVector, QRawDataVector);
 
         freqPlot->rescaleAxes();
         fftPlot->rescaleAxes();
+        rawPlot->rescaleAxes();
 
         freqPlot->replot();
         fftPlot->replot();
+        rawPlot->replot();
 
         freqPlot->update();
         fftPlot->update();
+        rawPlot->update();
 
     }
     catch (ArousalReader::NoDataReadException e) {
         ui->log->append("No data read ...");
         std::cout << "No data read" << std::endl;
     }
+    catch (ArousalReader::PacketLostException e) {
+        reset(false);
+        ui->log->append("Error : packet lost, reseting ...");
+    }
+}
+
+void MainWindow::reset(bool modif) {
+    if (modif)
+        ui->log->append("reseting acquisition because of settings modification");
+    xPositions.clear();
+    yPositions.clear();
+    rawDataVector.clear();
+    xRawDataVector.clear();
+}
+
+void MainWindow::on_spinBoxStart_valueChanged(int arg1)
+{
+    reset(true);
+}
+
+void MainWindow::on_spinBoxEnd_valueChanged(int arg1)
+{
+    reset(true);
+}
+
+void MainWindow::on_channelComboBox_currentIndexChanged(int index)
+{
+    reset(true);
+}
+
+void MainWindow::on_clearLogButton_clicked()
+{
+    ui->log->clear();
 }
