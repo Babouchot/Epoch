@@ -8,5 +8,9 @@ int main(int argc, char *argv[])
 
     w.show();
     
-    return a.exec();
+    //return a.exec();
+    while (true) {
+        w.renderGraphs();
+        a.processEvents();
+    }
 }

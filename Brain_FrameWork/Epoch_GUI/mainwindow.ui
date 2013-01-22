@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -45,7 +45,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBoxStart"/>
+           <widget class="QSpinBox" name="spinBoxStart">
+            <property name="maximum">
+             <number>127</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -59,12 +63,61 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBoxEnd"/>
+           <widget class="QSpinBox" name="spinBoxEnd">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>128</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
         <item>
          <widget class="QCustomPlot" name="FreqCustomPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="logTab">
+       <attribute name="title">
+        <string>Log</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QScrollArea" name="logScrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>408</width>
+             <height>355</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QTextBrowser" name="log">
+              <property name="minimumSize">
+               <size>
+                <width>390</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>390</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>

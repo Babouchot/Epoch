@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
     
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void renderGraphs();
     ~MainWindow();
     
 private slots:
@@ -24,9 +25,15 @@ private slots:
 
     void on_startAcqButton_clicked();
 
+    void on_StopAcqButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ArousalReader reader;
+    std::vector<MainWindow*> daughters;
+    bool acquisition;
+
+    void updateGraphs();
 };
 
 #endif // MAINWINDOW_H
