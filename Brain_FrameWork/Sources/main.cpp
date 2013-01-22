@@ -19,7 +19,7 @@ int main(){
 			if(ar.readNextFrequencies()){
 			cout<<cpt<<endl;
 			++cpt;
-			for(int i=0; i<ar.getChannelMap().size(); ++i){
+			for(unsigned int i=0; i<ar.getChannelMap().size(); ++i){
 				beta=ar.getBetaWavesFromChannel(i);
 			    ostringstream oss;
 			    oss <<"beta_"<< i <<".cvs";
