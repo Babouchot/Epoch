@@ -11,6 +11,8 @@ int main(){
 	FFT fft;
 	ArousalReader ar(&fft);
 	ar.initialiseReading();
+	vector<double> beta;
+	vector<double> raw;
 	int cpt=0;
 	while(true){
 		try {
@@ -18,10 +20,14 @@ int main(){
 			cout<<cpt<<endl;
 			++cpt;
 			for(int i=0; i<ar.getChannelMap().size(); ++i){
-				vector<double> beta=ar.getBetaWavesFromChannel(i);
+				beta=ar.getBetaWavesFromChannel(i);
 			    ostringstream oss;
 			    oss <<"beta_"<< i <<".cvs";
 			    ar.printArrayToFile(oss.str(), &beta[0], beta.size());
+			    raw=ar.getRawDataFromChannel(i);
+			    ostringstream oss2;
+			    oss2 <<"raw_"<< i <<".cvs";
+			    ar.printArrayToFile(oss2.str(), &raw[0], raw.size());
 			}
 		}
 		} catch (ArousalReader::PacketLostException loss) {

@@ -119,6 +119,7 @@ bool ArousalReader::readNextFrequencies(){
 					result.push_back(currentSample[i]);
 				}
 				_rawData.push_back(result);
+				cout<<"time stamp "<<result[17]<<"\n";
 			}
 
 			if(_rawData.size()>=ArousalReader::samplingRate){
