@@ -31,8 +31,12 @@ private:
     Ui::MainWindow *ui;
     ArousalReader reader;
     std::vector<MainWindow*> daughters;
-    bool acquisition;
 
+    // plot vectors
+    std::vector<double> xPositions;
+    std::vector<double> yPositions;
+
+    bool acquisition;
     void updateGraphs();
 };
 

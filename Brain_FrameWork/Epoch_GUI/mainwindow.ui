@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -40,14 +40,14 @@
           <item>
            <widget class="QLabel" name="labelStart">
             <property name="text">
-             <string>Start frequency (Hz)Plot:</string>
+             <string>Start frequency (Hz):</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QSpinBox" name="spinBoxStart">
             <property name="maximum">
-             <number>127</number>
+             <number>63</number>
             </property>
            </widget>
           </item>
@@ -68,7 +68,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>128</number>
+             <number>64</number>
             </property>
            </widget>
           </item>
