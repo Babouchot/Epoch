@@ -115,7 +115,7 @@ void MainWindow::updateGraphs() {
                                                                                 ui->channelComboBox->currentIndex());
         std::vector<double> fft = reader.getFrequenciesFromChannel(ui->channelComboBox->currentIndex());
 
-        int newValue;
+        int newValue=0;
         for (int i = 0; i < amplitudes.size(); ++i) {
             newValue += amplitudes[i];
         }

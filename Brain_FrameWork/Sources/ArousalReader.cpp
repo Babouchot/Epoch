@@ -119,7 +119,6 @@ bool ArousalReader::readNextFrequencies(){
 					result.push_back(currentSample[i]);
 				}
 				_rawData.push_back(result);
-				cout<<"time stamp "<<result[17]<<"\n";
 			}
 
 			if(_rawData.size()>=ArousalReader::samplingRate){
@@ -128,7 +127,7 @@ bool ArousalReader::readNextFrequencies(){
 					//packet loss treatment
 					throw PacketLostException();
 				}
-
+				cout<<"time stamp "<<_rawData[_rawData.size()-1][17]<<"\n";
 				_lastRawData.clear();
 				//_lastRawData=*new vector< vector<double> >(_rawData);
 				_lastRawData=_rawData;
