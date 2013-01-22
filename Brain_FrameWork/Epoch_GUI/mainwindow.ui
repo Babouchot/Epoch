@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -64,6 +64,11 @@
        <attribute name="title">
         <string>Alpha/Beta waves</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QCustomPlot" name="abHistPlot" native="true"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="logTab">
        <attribute name="title">

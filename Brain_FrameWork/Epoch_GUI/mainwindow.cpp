@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+
 #include "ArousalReader.h"
 #include "fft.h"
 
@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     fftPlot->xAxis->setLabel("Frequency");
     fftPlot->yAxis->setLabel("FFT value");
     fftPlot->xAxis->setRange(0, 64);
-    fftPlot->yAxis->setRange(0,10);
 
     fftPlot->replot();
 
@@ -32,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QCustomPlot* freqPlot = ui->FreqCustomPlot;
     freqPlot->addGraph();
 
-    freqPlot->xAxis->setLabel("Time (seconds)");
+    freqPlot->xAxis->setLabel("time (seconds)");
     freqPlot->yAxis->setLabel("Arousal amplitude");
 
     freqPlot->replot();
@@ -40,12 +39,30 @@ MainWindow::MainWindow(QWidget *parent) :
     QCustomPlot* rawPlot = ui->rawCustomPlot;
     rawPlot->addGraph();
     rawPlot->replot();
+    rawPlot->xAxis->setLabel("time (seconds)");
+    rawPlot->yAxis->setLabel("raw signal");
+
+    QCustomPlot* abPlot = ui->abHistPlot;
+
+    bars = new QCPBars(abPlot->xAxis, abPlot->yAxis);
+
+    abPlot->addPlottable(bars);
+    bars->setName("Alpha & Beta waves");
+
+    abPlot->addGraph();
+    abPlot->xAxis->setRange(0, 3);
+    abPlot->xAxis->setLabel("Alpha                                   Beta");
+    abPlot->yAxis->setRange(0, 300000);
+    abPlot->yAxis->setLabel("Amplitude");
+    abPlot->replot();
+
 
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete bars;
     for (int i = 0; i <= daughters.size(); ++i) {
         delete daughters[i];
     }
@@ -195,9 +212,35 @@ void MainWindow::updateGraphs() {
         fftPlot->replot();
         rawPlot->replot();
 
-        freqPlot->update();
+        /*freqPlot->update();
         fftPlot->update();
-        rawPlot->update();
+        rawPlot->update();*/
+
+        QCustomPlot* abPlot = ui->abHistPlot;
+
+        QVector<double> keyBars;
+        QVector<double> valueBars;
+
+        keyBars << 1 << 2;
+
+        std::vector<double> alphaWaves = reader.getAlphaWavesFromChannel(ui->channelComboBox->currentIndex());
+        std::vector<double> betaWaves = reader.getBetaWavesFromChannel(ui->channelComboBox->currentIndex());
+        double alphaValue, betaValue = 0;
+
+        for (int i = 0; i < alphaWaves.size(); ++i) {
+            alphaValue += alphaWaves[i];
+        }
+
+        for (int i = 0; i < betaWaves.size(); ++i) {
+            betaValue += betaWaves[i];
+        }
+
+        valueBars << alphaValue << betaValue;
+
+        bars->setData(keyBars, valueBars);
+
+        //abPlot->rescaleAxes();
+        abPlot->replot();
 
     }
     catch (ArousalReader::NoDataReadException e) {

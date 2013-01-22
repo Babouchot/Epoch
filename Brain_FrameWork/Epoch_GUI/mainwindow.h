@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "ui_mainwindow.h"
 #include "ArousalReader.h"
 #include "fft.h"
 
@@ -45,6 +46,7 @@ private:
     std::vector<double> yPositions;
     std::vector<double> rawDataVector;
     std::vector<double> xRawDataVector;
+    QCPBars* bars;
 
     void reset(bool);
 
