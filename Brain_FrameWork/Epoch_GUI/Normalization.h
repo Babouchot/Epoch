@@ -3,9 +3,11 @@
 
 #include "Algorithm.h"
 
-
-class Normalization
-{
+/*
+* Normalization class, doesn't really give goo results right now because
+* it only normalize one second a the time and not the whole data set
+*/
+class Normalization : public Algorithm {
 	private : 
 
 		int newMin;
@@ -14,6 +16,8 @@ class Normalization
 	public:
 
 		Normalization(int nMin, int nMax);
-		virtual void process(double* realArray, double* result, int size);
+		virtual std::vector<std::vector<double> > process(const std::vector<std::vector<double> >& data);
 
 };
+
+#endif
