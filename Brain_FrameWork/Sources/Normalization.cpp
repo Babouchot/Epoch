@@ -10,11 +10,10 @@ vector<vector<double> > Normalization::process(const vector<vector<double> >& da
 	double min=100000;
 	double max=-100000;
 	vector<vector<double> > resultData(data);
-	double* temp = new double[data.size()];
 
-	for(int chan=0; chan<data[0].size(); ++chan){
+	for(unsigned int chan=0; chan<data[0].size(); ++chan){
 
-		for(int i=0; i<data.size(); ++i){
+		for(unsigned int i=0; i<data.size(); ++i){
 			if(data[i][chan]<min){
 				min=data[i][chan];
 			}
@@ -24,7 +23,7 @@ vector<vector<double> > Normalization::process(const vector<vector<double> >& da
 			}
 		}
 
-		for(int i=0; i<data.size(); ++i){
+		for(unsigned int i=0; i<data.size(); ++i){
 			resultData[i][chan]=newMin+(data[i][chan]-min)*(newMax-newMin)/(max-min);
 		}
 

@@ -58,7 +58,6 @@ void ArousalReader::initialiseReading(){
 	initialiseChannelList();
 	eEvent = EE_EmoEngineEventCreate();
 	eState = EE_EmoStateCreate();
-	const unsigned short composerPort	= 1726;
 
 	if (EE_EngineConnect() != EDK_OK) {
 		cout <<"Emotiv Engine start up failed"<<endl;
@@ -106,42 +105,53 @@ bool ArousalReader::readNextFrequencies(){
 		unsigned int nSamplesTaken=0;
 		EE_DataGetNumberOfSample(hData,&nSamplesTaken);
 		EE_DataSetBufferSizeInSec(secs);
-
+		vector<double> result;
 		if (nSamplesTaken != 0) {
 
 			double* currentSample = new double[nSamplesTaken];
-
-			for(int i=0;i<nSamplesTaken;++i){
-				vector<double> result;
-				for (int chan = 0; chan<channelSize(); chan++) {//pour chaque capteur
-
+			//Go through each acquired sample
+			for(unsigned int i=0;i<nSamplesTaken;++i){
+				//Go through each channel
+				for (unsigned int chan = 0; chan<channelSize(); chan++) {//pour chaque capteur
+					//Save the data for the current sample and the current channel
 					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
 					result.push_back(currentSample[i]);
 				}
 				_rawData.push_back(result);
+				result.clear();
 			}
 
+			//If we have enough data (one second worth of sample)
 			if(_rawData.size()>=ArousalReader::samplingRate){
 				
 				if(_lastCounter!=0 && _rawData[_rawData.size()-1][0]!=_lastCounter-1) {
 					//packet loss treatment
 					throw PacketLostException();
 				}
+
+				_lastCounter=_rawData[_rawData.size()-1][0];
+
 				cout<<"time stamp "<<_rawData[_rawData.size()-1][17]<<"\n";
+				
+				//set the new _lastRawData
 				_lastRawData.clear();
-				//_lastRawData=*new vector< vector<double> >(_rawData);
 				_lastRawData=_rawData;
 
+				//Applay pre processing
 				if( _preProcessingAlgorithm!=NULL){
 					_lastRawData=_preProcessingAlgorithm->process(_lastRawData);
 				}
 
+				//Apply post processing (fft or other similar algorithm)
 				_lastFrequencies =_postProcessingAlgorithm->process(_lastRawData);
 
+				//Apply normalization or post fft treatment algorithm
 				if(_normalizationAlgorithm!=NULL){
 					_lastFrequencies = _normalizationAlgorithm->process(_lastRawData);
 				}
+
 				_rawData.clear();
+				delete[] currentSample;
 				return true;
 			}
 
@@ -179,7 +189,7 @@ vector<double> ArousalReader::getFrequenciesFromChannel(int channelIndex){
 
 	vector<double> freq;
 
-	for(int i=0; i<_lastFrequencies.size(); ++i){
+	for(unsigned int i=0; i<_lastFrequencies.size(); ++i){
 		freq.push_back(_lastFrequencies[i][channelIndex]);
 	}
 
@@ -193,7 +203,7 @@ vector<double> ArousalReader::getRawDataFromChannel(int channelIndex){
 	}
 
 	vector<double> data;
-	for(int i=0; i<_lastRawData.size(); ++i){
+	for(unsigned int i=0; i<_lastRawData.size(); ++i){
 		data.push_back(_lastRawData[i][channelIndex]);
 	}
 
@@ -206,10 +216,7 @@ vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end
 	vector<double> freq = getFrequenciesFromChannel(channelIndex);
 	freqRange.assign(freq.begin()+begin, freq.begin()+end);
 
-	//normalize(&freqRange[0], freqRange.size());
-
 	freq.clear();
-	//delete &freq
 	return freqRange;
 }
 

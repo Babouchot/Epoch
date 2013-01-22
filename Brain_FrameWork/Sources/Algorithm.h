@@ -3,6 +3,10 @@
 
 #include <vector>
 
+/*
+* The abstract class you should extends if you want to provide
+* your own algorithms
+*/
 class Algorithm
 {
 	public:

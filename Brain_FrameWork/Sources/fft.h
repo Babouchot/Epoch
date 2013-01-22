@@ -6,6 +6,9 @@
 #include <string>
 #include "Algorithm.h"
 
+/*
+* Class implementing the fft algorithm ported from the colombia fft algorithm
+*/
 class FFT : public Algorithm{
   private:
     int n, m;
