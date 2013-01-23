@@ -1,6 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/*!
+ * \file mainwindow.h
+ * \brief Epoch GUI main window
+ * \author Arnaud Ancelin, Aubert Gwenn, Maugard Matthieu, Maureille Bastien
+ * \version 1.0
+ */
+
+
 #include <QMainWindow>
 #include <QMessageBox>
 #include "ui_mainwindow.h"
@@ -11,17 +19,28 @@ namespace Ui {
 class MainWindow;
 }
 
+/*!
+ * \class MainWindow
+ * \brief main window of the graphical application
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
     
 public:
     explicit MainWindow(QWidget *parent = 0);
+
+    /*!
+     * \fn void renderGraphs()
+     * \brief function rendering graphs tabs
+     */
     void renderGraphs();
     ~MainWindow();
     
-    /**
-     * reset acquisition
+    /*!
+     * \fn void reset(bool modif)
+     * \param modif : true if the reseting is caused by an user settings modification, otherwise false.
+     * \brief reset acquisition
      */
     void reset(bool);
 
@@ -70,9 +89,28 @@ private:
     //Games added in the framework
     std::vector<std::string> games;
 
+    /*!
+     * \fn void updateGraphs()
+     * \brief function updating graphs plots according to headset acquisition
+     */
     void updateGraphs();
+
+    /*!
+     * \fn void renderSpinners()
+     * \brief function rendering spinBox min and max values
+     */
     void renderSpinners();
+
+    /*!
+     * \fn void saveAcquisition()
+     * \brief save acquisition in the filesystem
+     */
     void saveAcquisition();
+
+    /*!
+     * \fn void loadAcquisition()
+     * \brief load acquisition from the filesystem
+     */
     void loadAcquisition();
 };
 

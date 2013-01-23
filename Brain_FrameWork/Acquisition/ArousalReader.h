@@ -1,6 +1,14 @@
 #ifndef Arousal_READER_H
 #define Arousal_READER_H
 
+
+/*!
+ * \file ArousalReader.h
+ * \brief acquire data from the EPOC headset
+ * \author Arnaud Ancelin, Aubert Gwenn, Maugard Matthieu, Maureille Bastien
+ * \version 1.0
+ */
+
 #include "EmoStateDLL.h"
 #include "edk.h"
 #include "edkErrorCode.h"
@@ -12,10 +20,12 @@
 #include "Algorithm.h"
 
 
-/**
-* The arousal reader class is the main part of the api designed to help
-* reading and processing data from the Emotiv headset
-*/
+/*!
+ * \class ArousalReader
+ * \brief reader from the EPOC headset 
+ * The arousal reader class is the main part of the api designed to help 
+ * reading and processing data from the Emotiv headset
+ */
 class ArousalReader {
 
 	private :

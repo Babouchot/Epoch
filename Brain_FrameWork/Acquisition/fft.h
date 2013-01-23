@@ -1,14 +1,23 @@
 #ifndef _FFT_H_
 #define _FFT_H_
 
+/*!
+ * \file fft.h
+ * \brief Fast Fourier Transform algorithm
+ * \author Arnaud Ancelin, Aubert Gwenn, Maugard Matthieu, Maureille Bastien
+ * \version 1.0
+ */
+
+
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include "Algorithm.h"
 
-/*
-* Class implementing the fft algorithm ported from the colombia fft algorithm
-*/
+/*!
+ * \class FFT
+ * Class implementing the fft algorithm ported from the colombia fft algorithm
+ */
 class FFT : public Algorithm{
   private:
     int n, m;
