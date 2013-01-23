@@ -10,7 +10,17 @@ int main(int argc, char *argv[])
     
     //return a.exec();
     while (true) {
-        w.renderGraphs();
+        try {
+            w.renderGraphs();
+        }
+        catch (ArousalReader::PacketLostException e) {
+            std::cout << "Packet lost during acquisition" << std::endl;
+        }
+        catch (ArousalReader::NoDataReadException e) {
+            std::cout << "No data read" << std::endl;
+        }
+
         a.processEvents();
+        usleep(25000);
     }
 }
