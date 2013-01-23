@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -75,8 +75,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>499</width>
-             <height>288</height>
+             <width>542</width>
+             <height>302</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout">
@@ -124,18 +124,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="gameComboBox">
-        <item>
-         <property name="text">
-          <string>Pong</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Tetris</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="gameComboBox"/>
       </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="StartGameButton">
@@ -199,6 +188,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="addGameButton">
+        <property name="text">
+         <string>Add game</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -209,7 +205,7 @@
      <x>0</x>
      <y>0</y>
      <width>856</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

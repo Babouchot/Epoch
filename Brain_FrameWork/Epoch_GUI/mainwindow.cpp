@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <cstdlib>
 #include "mainwindow.h"
 #include "ArousalReader.h"
 #include "fft.h"
@@ -6,7 +7,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    reader(new FFT())
+    reader(new FFT()),
+    yPositions(),
+    xPositions()
 {
     ui->setupUi(this);
     acquisition = false;
@@ -52,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     abPlot->addGraph();
     abPlot->xAxis->setRange(0, 3);
     abPlot->xAxis->setLabel("Alpha                                   Beta");
-    abPlot->yAxis->setRange(0, 300000);
+    abPlot->yAxis->setRange(0, 40000);
     abPlot->yAxis->setLabel("Amplitude");
     abPlot->replot();
 
@@ -67,7 +70,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionQuit_triggered()
 {
-    delete this;
+    //delete this;
     exit(0);
 }
 
@@ -285,7 +288,22 @@ void MainWindow::loadAcquisition() {
     QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
     std::string file = openFile.toStdString();
     try {
+        xPositions.clear();
+        yPositions.clear();
+
         yPositions = reader.getVectorFromFile(file);
+
+        QVector<double> x(yPositions.size()-1);
+        QVector<double> y(yPositions.size()-1);
+
+        for (int i = 0; i < yPositions.size()-1; ++i) {
+            xPositions.push_back(i);
+            x[i] = xPositions[i];
+            y[i] = yPositions[i];
+        }
+
+        ui->FreqCustomPlot->graph(0)->setData(x, y);
+        ui->FreqCustomPlot->rescaleAxes();
         ui->FreqCustomPlot->replot();
     }
     catch (ArousalReader::WrongFileFormatException e) {
@@ -317,10 +335,45 @@ void MainWindow::on_clearLogButton_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    saveAcquisition();
+    loadAcquisition();
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    loadAcquisition();
+    saveAcquisition();
+}
+
+void MainWindow::on_addGameButton_clicked()
+{
+   QString openFile = QFileDialog::getOpenFileName(this, tr("Select your game"),tr("/"));
+   std::string file = openFile.toStdString();
+   if (file.size() > 0) {
+       games.push_back(file);
+       ui->gameComboBox->addItem(basename(file.c_str()));
+   }
+}
+
+void MainWindow::on_StartGameButton_clicked()
+{
+    if (games.size() > 0) {
+        std::cout<<games[ui->gameComboBox->currentIndex()].c_str()<<std::endl;
+
+        std::string cmd,path;
+        cmd+="(cd ";
+        path=games[ui->gameComboBox->currentIndex()];
+        int i=path.rfind("/");
+        path=path.substr(0,i);
+        std::cout<<path<<std::endl;
+        cmd+=path;
+        cmd+="; ";
+        //std::system(cmd.c_str());
+        cmd+=games[ui->gameComboBox->currentIndex()];
+        cmd+=")";
+
+
+        if (!fork()) 
+        {
+            std::system(cmd.c_str());
+        }
+    }
 }

@@ -41,6 +41,10 @@ private slots:
 
     void on_actionSave_triggered();
 
+    void on_addGameButton_clicked();
+
+    void on_StartGameButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ArousalReader reader;
@@ -52,6 +56,8 @@ private:
     std::vector<double> rawDataVector;
     std::vector<double> xRawDataVector;
     QCPBars* bars;
+
+    std::vector<std::string> games;
 
     void reset(bool);
 

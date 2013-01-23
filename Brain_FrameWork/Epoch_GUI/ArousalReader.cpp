@@ -134,7 +134,10 @@ bool ArousalReader::readNextFrequencies(){
 
 				_lastCounter=_rawData[_rawData.size()-1][0];
 
-				cout<<"time stamp "<<_rawData[_rawData.size()-1][17]<<"\n";
+				
+				for(int i=0; i<_rawData.size(); ++i){
+					cout<<"time stamp "<<_rawData[i][17]<<"\n";
+				}
 				
 				//set the new _lastRawData
 				_lastRawData.clear();
@@ -176,7 +179,7 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 	ofs.close();
 }
 
-vector<double> getVectorFromFile(string file){
+vector<double> ArousalReader::getVectorFromFile(string file){
 
 	if(file.find(".cvs")>file.size()){
 		throw ArousalReader::WrongFileFormatException();
@@ -184,7 +187,7 @@ vector<double> getVectorFromFile(string file){
 	
 	ifstream ifs(file.c_str());
 	string line;
-	double val;
+	double val(0);
 	vector<double> result;
 
 	if (ifs.is_open()) {
