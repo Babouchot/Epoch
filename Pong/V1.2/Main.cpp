@@ -43,7 +43,7 @@ int main(int argc, char **argv)
     }
 
     //Mettre un titre à la fenêtre
-    SDL_WM_SetCaption("Pong Version 1.2", NULL);
+    SDL_WM_SetCaption("Pong Version 1.3", NULL);
 
     //Ouvrir une fenetre
     screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_OPENGL);
