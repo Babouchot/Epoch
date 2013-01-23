@@ -347,8 +347,10 @@ void MainWindow::on_addGameButton_clicked()
 {
    QString openFile = QFileDialog::getOpenFileName(this, tr("Select your game"),tr("/"));
    std::string file = openFile.toStdString();
-   games.push_back(file);
-   ui->gameComboBox->addItem(basename(file.c_str()));
+   if (file.size() > 0) {
+       games.push_back(file);
+       ui->gameComboBox->addItem(basename(file.c_str()));
+   }
 }
 
 void MainWindow::on_StartGameButton_clicked()
