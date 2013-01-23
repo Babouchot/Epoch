@@ -1,5 +1,5 @@
+#include <QFileDialog>
 #include "mainwindow.h"
-
 #include "ArousalReader.h"
 #include "fft.h"
 
@@ -86,6 +86,7 @@ void MainWindow::on_actionOpen_window_triggered()
 void MainWindow::on_startAcqButton_clicked()
 {
     if (!acquisition) {
+        reset(false);
         reader.initialiseReading();
         acquisition = true;
         ui->log->append("Emotiv Engine start up sucssessful \nreading initialise...");
@@ -118,7 +119,6 @@ void MainWindow::on_StopAcqButton_clicked()
     if (acquisition) {
         reader.endReading();
         acquisition = false;
-        reset(false);
         ui->log->append("reading stopped");
     }
     else {
@@ -280,4 +280,14 @@ void MainWindow::on_channelComboBox_currentIndexChanged(int index)
 void MainWindow::on_clearLogButton_clicked()
 {
     ui->log->clear();
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save acquisition as"),tr("../"));
 }
