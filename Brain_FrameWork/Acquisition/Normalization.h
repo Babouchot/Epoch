@@ -3,7 +3,8 @@
 
 #include "Algorithm.h"
 
-/*
+/**
+* exemple of an algorithm implementation
 * Normalization class, doesn't really give goo results right now because
 * it only normalize one second a the time and not the whole data set
 */
