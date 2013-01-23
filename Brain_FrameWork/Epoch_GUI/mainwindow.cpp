@@ -74,14 +74,6 @@ void MainWindow::on_actionQuit_triggered()
     exit(0);
 }
 
-void MainWindow::on_actionOpen_window_triggered()
-{
-    /*
-    MainWindow* w = new MainWindow();
-    daughters.push_back(w);
-    w->show();
-    */
-}
 
 void MainWindow::on_startAcqButton_clicked()
 {
@@ -99,12 +91,7 @@ void MainWindow::renderGraphs() {
     renderSpinners();
     if (acquisition) {
         if (reader.readNextFrequencies()) {
-            //ui->log->append("frequencies acquisition successfull");
             updateGraphs();
-
-            for (int i = 0; i < daughters.size(); ++i) {
-                daughters[i]->updateGraphs();
-            }
         }
     }
 }
@@ -151,7 +138,6 @@ void MainWindow::updateGraphs() {
                                                                                 ui->channelComboBox->currentIndex());
         std::vector<double> fft = reader.getFrequenciesFromChannel(ui->channelComboBox->currentIndex());
         std::vector<double> rawData = reader.getRawDataFromChannel(ui->channelComboBox->currentIndex());
-        //std::vector<double> counter = reader.getRawDataFromChannel(0);
 
         int newValue=0;
 
@@ -194,13 +180,6 @@ void MainWindow::updateGraphs() {
             QXRawDataVector[i] = xRawDataVector[i];
         }
 
-        /*std::stringstream stream;
-        stream << "x[" << x.size()-1 << "] = " << xPositions[xPositions.size()-1] << "; " << "y[" << y.size()-1 << "] = " << yPositions[yPositions.size()-1];
-        stream << std::endl << newValue;
-        char* ss = &stream.str()[0];
-        ui->log->append(ss);
-        */
-
         QVector<double> xFFT(fft.size()/2);
         QVector<double> yFFT(fft.size()/2);
 
@@ -224,10 +203,6 @@ void MainWindow::updateGraphs() {
         freqPlot->replot();
         fftPlot->replot();
         rawPlot->replot();
-
-        /*freqPlot->update();
-        fftPlot->update();
-        rawPlot->update();*/
 
         QCustomPlot* abPlot = ui->abHistPlot;
 
@@ -257,6 +232,7 @@ void MainWindow::updateGraphs() {
 
     }
     catch (ArousalReader::NoDataReadException e) {
+        reset(false);
         ui->log->append("No data read ...");
         std::cout << "No data read" << std::endl;
     }

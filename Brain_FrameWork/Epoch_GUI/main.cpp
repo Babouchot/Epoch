@@ -15,9 +15,11 @@ int main(int argc, char *argv[])
         }
         catch (ArousalReader::PacketLostException e) {
             std::cout << "Packet lost during acquisition" << std::endl;
+            w.reset(false);
         }
         catch (ArousalReader::NoDataReadException e) {
             std::cout << "No data read" << std::endl;
+            w.reset(false);
         }
 
         a.processEvents();

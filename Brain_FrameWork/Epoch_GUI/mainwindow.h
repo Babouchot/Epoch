@@ -20,10 +20,15 @@ public:
     void renderGraphs();
     ~MainWindow();
     
+    /**
+     * reset acquisition
+     */
+    void reset(bool);
+
+
+
 private slots:
     void on_actionQuit_triggered();
-
-    void on_actionOpen_window_triggered();
 
     void on_startAcqButton_clicked();
 
@@ -47,21 +52,24 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    ArousalReader reader;
-    std::vector<MainWindow*> daughters;
+
+    ArousalReader reader; // reads data from the headset
 
     // plot vectors
-    std::vector<double> xPositions;
-    std::vector<double> yPositions;
-    std::vector<double> rawDataVector;
-    std::vector<double> xRawDataVector;
+    std::vector<double> xPositions; // Time axis for the acquisition
+    std::vector<double> yPositions; // frequencies sum amplitude
+    std::vector<double> rawDataVector; // raw data received amplitude
+    std::vector<double> xRawDataVector; // Time axis for raw data (auto-scaling)
+
+    //histogram bars
     QCPBars* bars;
 
+    // boolean to know if an acquisition is currently running
+    bool acquisition;
+
+    //Games added in the framework
     std::vector<std::string> games;
 
-    void reset(bool);
-
-    bool acquisition;
     void updateGraphs();
     void renderSpinners();
     void saveAcquisition();
