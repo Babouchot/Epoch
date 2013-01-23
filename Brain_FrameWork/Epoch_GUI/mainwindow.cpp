@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     abPlot->addGraph();
     abPlot->xAxis->setRange(0, 3);
     abPlot->xAxis->setLabel("Alpha                                   Beta");
-    abPlot->yAxis->setRange(0, 300000);
+    abPlot->yAxis->setRange(0, 40000);
     abPlot->yAxis->setLabel("Amplitude");
     abPlot->replot();
 
@@ -70,7 +70,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionQuit_triggered()
 {
-    delete this;
+    //delete this;
     exit(0);
 }
 
@@ -371,7 +371,8 @@ void MainWindow::on_StartGameButton_clicked()
         cmd+=")";
 
 
-        if (fork()) {
+        if (!fork()) 
+        {
             std::system(cmd.c_str());
         }
     }
