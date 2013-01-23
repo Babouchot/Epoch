@@ -153,7 +153,7 @@ bool Jeu::init()
 {
     j1 = 0;
     j2 = 0;
-    pouet = true;
+    aff = true;
     return initObjets() && initTextures() && Physique::init();
 }
 
@@ -170,7 +170,8 @@ void Jeu::recommence()
     Objet* o = new Objet();
     Objet* pad = new Objet();
     Objet* b = new Objet();
-    pouet = true;
+    aff = true;
+    fullscreen = false;
 
     j1 = j2 = 0;
    
@@ -216,7 +217,7 @@ void Jeu::reInit()
     ennemi->setVitesse(0);
     balle->setPos(WIDTH/2 - TAILLE_BALLE/2, HEIGHT/2 - TAILLE_BALLE/2);
     balle->setVitesse(0);
-    pouet = true;
+    aff = true;
 }
 
 int Jeu::addObjet(Objet* o)
@@ -289,12 +290,54 @@ bool Jeu::clavier(unsigned int k)
         case SDLK_s:
             balle->setDirVitesse(1.0,0.0);
             balle->setVitesse(3.0);
-            if(pouet)
+            if(aff)
             {
-                pouet = !pouet;
+                aff = !aff;
             }
             return true;
-        
+        case SDLK_f:
+            int points1, points2;
+            points1 = Jeu::j1;
+            points2 = Jeu::j2;
+            if(!fullscreen)
+            {
+                SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_OPENGL | SDL_FULLSCREEN);
+                SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+
+                // Mettre le systeme de coordonnees a zero avant de modifier
+                glMatrixMode(GL_PROJECTION);
+                glLoadIdentity();
+
+                //Mettre la bonne perspective
+                glOrtho(0,WIDTH,HEIGHT,0,-1,1);
+                glMatrixMode(GL_MODELVIEW);
+                glLoadIdentity(); 
+                moteur.init();
+                moteur.initJeu(); 
+                Jeu::j1 = points1;
+                Jeu::j2 = points2;
+                fullscreen = true;
+            }
+            else
+            {
+                SDL_SetVideoMode(WIDTH, HEIGHT, 32, SDL_OPENGL);
+                SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
+
+                // Mettre le systeme de coordonnees a zero avant de modifier
+                glMatrixMode(GL_PROJECTION);
+                glLoadIdentity();
+
+                //Mettre la bonne perspective
+                glOrtho(0,WIDTH,HEIGHT,0,-1,1);
+                glMatrixMode(GL_MODELVIEW);
+                glLoadIdentity(); 
+                moteur.init();
+                moteur.initJeu(); 
+                Jeu::j1 = points1;
+                Jeu::j2 = points2;
+                fullscreen = false;
+            }     
+            return true;
         case SDLK_DOWN:
         if(barre->getY() + LARG_BARRE <= HEIGHT)
         {
@@ -344,7 +387,7 @@ void Jeu::toucheObjets()
 void Jeu::point(bool i)
 {
   if (i) {
-    if (j1 == 10) {
+    if (j1 == 9) {
       std::cout << "Bravo vous avez gagné ! :)" << std::endl;
       moteur.initJeu();
     }

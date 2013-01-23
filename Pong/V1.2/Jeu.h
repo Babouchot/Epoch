@@ -53,6 +53,7 @@ class Jeu
         Objet* balle;
         Objet* barre;
         Objet* ennemi;
+        bool fullscreen;
         //Pour la creation des balles
 		unsigned int last;
 	
@@ -65,7 +66,7 @@ class Jeu
 
 	public:
 
-        bool pouet;
+        bool aff;
 		//Constructeur et Destructeur
 		Jeu();
 		~Jeu();
