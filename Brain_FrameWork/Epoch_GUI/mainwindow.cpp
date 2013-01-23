@@ -283,6 +283,16 @@ void MainWindow::saveAcquisition() {
 
 void MainWindow::loadAcquisition() {
     QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
+    std::string file = openFile.toStdString();
+    try {
+        yPositions = reader.getVectorFromFile(file);
+        ui->FreqCustomPlot->replot();
+    }
+    catch (ArousalReader::WrongFileFormatException e) {
+        QMessageBox::information( this, "Error",
+                                  "Could not open load file (wrong file format or not a .cvs file)",
+                                  "Ok", 0);
+    }
 }
 
 void MainWindow::on_spinBoxStart_valueChanged(int arg1)
