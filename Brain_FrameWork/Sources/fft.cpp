@@ -1,6 +1,7 @@
 #include <math.h>
 #include <sys/time.h>
 #include <stdlib.h>
+#include <vector>
 #include "fft.h"
 
 #define PI  3.141592653
@@ -71,7 +72,7 @@ void FFT::printReIm(double re[], double im[]) {
  ****************************************************************/
 void FFT::fft(double x[], double y[]) {
   int i,j,k,n1,n2,a;
-  double c,s,e,t1,t2;
+  double c,s,t1,t2;
    
    
   // Bit-reverse
@@ -121,18 +122,40 @@ void FFT::fft(double x[], double y[]) {
   }
 }
 
-void FFT::process(double* realArray, double* result, int size){
-  setSize(size);
-  double* imaginaryArray=new double[size];
-  for(int i=0; i<size; ++i){
-    imaginaryArray[i]=0;
-  }
-  fft(realArray, imaginaryArray);
-  computeModulus(realArray, imaginaryArray, result);
+vector<vector<double> > FFT::process(const vector<vector<double> >& data){
+  
+  vector<vector<double> > resultData(data);
+  double* temp=new double[data.size()];
+  double* imaginaryArray=new double[data.size()];
+  double* result=new double[data.size()];
+  int size=closestTwoPower(data.size());
 
+  for(unsigned int chan=0; chan<data[0].size(); ++chan){
+
+    for(unsigned int i=0; i<data.size(); ++i){
+      temp[i]=data[i][chan];
+    }
+
+    setSize(size);
+    for(int i=0; i<size; ++i){
+      imaginaryArray[i]=0;
+    }
+
+    fft(temp, imaginaryArray);
+    computeModulus(temp, imaginaryArray, result);
+    for(int i=0; i<size; ++i){
+      resultData[i][chan]=result[i];
+    }
+
+  }
+
+  delete[] temp;
   delete[] imaginaryArray;
+  delete[] result;
   delete[] sinus;
   delete[] cosinus;
+
+  return resultData;
 }
 
 void FFT::computeModulus(double* x, double* y, double* result){

@@ -1,4 +1,7 @@
 #include "ArousalReader.h"
+#include <unistd.h>
+#include <cstdlib>
+#include <string>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -22,27 +25,6 @@ unsigned int channelSize(){
 	return sizeof(targetChannelList)/sizeof(EE_DataChannel_t);
 }
 
-void ArousalReader::applyPreProcessing(){
-	double* result=new double[samplingRate];
-	double* temp=new double[samplingRate];
-
-	for(int chan=0; chan<channelSize(); ++chan){
-
-		for(int i=0; i<samplingRate; ++i){
-			temp[i]=_lastRawData[i][chan];
-		}
-
-		_preProcessingAlgorithm->process(temp, result, samplingRate);
-
-		for(int i=0; i<samplingRate; ++i){
-			_lastRawData[i][chan]=result[i];
-		}
-	}
-
-	delete[] temp;
-	delete[] result;
-}
-
 /////////////////member functions//////////////////
 
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
@@ -50,7 +32,7 @@ ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) :
 						_preProcessingAlgorithm(preProcess),
 						_normalizationAlgorithm(NULL),
 						_readyToCollect(false),
-						secs(0), userID(0) {
+						secs(0), userID(0), _lastCounter(0) {
 	if(_channelList.size()==0){
 		initialiseChannelList();
 	}
@@ -61,10 +43,17 @@ ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algo
 						_preProcessingAlgorithm(preProcess),
 						_normalizationAlgorithm(normalize),
 						_readyToCollect(false),
-						secs(0), userID(0)  {
+						secs(0), userID(0), _lastCounter(0)  {
 	if(_channelList.size()==0){
 		initialiseChannelList();
 	}
+}
+
+ArousalReader::~ArousalReader(){
+	_rawData.clear();
+	_lastRawData.clear();
+	//delete &_rawData;
+	//delete &_lastRawData;
 }
 
 void ArousalReader::initialiseReading(){
@@ -72,7 +61,6 @@ void ArousalReader::initialiseReading(){
 	initialiseChannelList();
 	eEvent = EE_EmoEngineEventCreate();
 	eState = EE_EmoStateCreate();
-	const unsigned short composerPort	= 1726;
 
 	if (EE_EngineConnect() != EDK_OK) {
 		cout <<"Emotiv Engine start up failed"<<endl;
@@ -90,10 +78,12 @@ void ArousalReader::initialiseReading(){
 }
 
 void ArousalReader::endReading(){
-	EE_DataFree(hData);
-	EE_EngineDisconnect();
-	EE_EmoStateFree(eState);
-	EE_EmoEngineEventFree(eEvent);
+	if(_rawData.size()!=0){
+		EE_DataFree(hData);
+		EE_EngineDisconnect();
+		EE_EmoStateFree(eState);
+		EE_EmoEngineEventFree(eEvent);
+	}
 }
 
 bool ArousalReader::readNextFrequencies(){
@@ -111,73 +101,108 @@ bool ArousalReader::readNextFrequencies(){
 		}
 	}
 
+
 	if(_readyToCollect){
 
 		EE_DataUpdateHandle(0, hData);
 		unsigned int nSamplesTaken=0;
 		EE_DataGetNumberOfSample(hData,&nSamplesTaken);
 		EE_DataSetBufferSizeInSec(secs);
-
+		vector<double> result;
 		if (nSamplesTaken != 0) {
 
 			double* currentSample = new double[nSamplesTaken];
-
-			for(int i=0;i<nSamplesTaken;++i){
-				vector<double> result;
-				for (int chan = 0; chan<channelSize(); chan++) {//pour chaque capteur
-
+			//Go through each acquired sample
+			for(unsigned int i=0;i<nSamplesTaken;++i){
+				//Go through each channel
+				for (unsigned int chan = 0; chan<channelSize(); chan++) {//pour chaque capteur
+					//Save the data for the current sample and the current channel
 					EE_DataGet(hData, targetChannelList[chan], currentSample, nSamplesTaken);
 					result.push_back(currentSample[i]);
 				}
 				_rawData.push_back(result);
+				result.clear();
 			}
 
+			//If we have enough data (one second worth of sample)
 			if(_rawData.size()>=ArousalReader::samplingRate){
+				
+				if(_lastCounter!=0 && _rawData[_rawData.size()-1][0]!=_lastCounter-1) {
+					//packet loss treatment
+					throw PacketLostException();
+				}
 
+				_lastCounter=_rawData[_rawData.size()-1][0];
+
+				cout<<"time stamp "<<_rawData[_rawData.size()-1][17]<<"\n";
+				
+				//set the new _lastRawData
 				_lastRawData.clear();
-				//_lastRawData=*new vector< vector<double> >(_rawData);
 				_lastRawData=_rawData;
 
+				//Applay pre processing
 				if( _preProcessingAlgorithm!=NULL){
-					applyPreProcessing();
+					_lastRawData=_preProcessingAlgorithm->process(_lastRawData);
 				}
+
+				//Apply post processing (fft or other similar algorithm)
+				_lastFrequencies =_postProcessingAlgorithm->process(_lastRawData);
+
+				//Apply normalization or post fft treatment algorithm
+				if(_normalizationAlgorithm!=NULL){
+					_lastFrequencies = _normalizationAlgorithm->process(_lastRawData);
+				}
+
 				_rawData.clear();
+				delete[] currentSample;
 				return true;
 			}
 
 			delete[] currentSample;
 		}
 	}
+
+	usleep(1000/150);
+
 	return false;
 }
 
-ArousalReader::~ArousalReader(){
-	_rawData.clear();
-	_lastRawData.clear();
-	//delete &_rawData;
-	//delete &_lastRawData;
-}
-
-void ArousalReader::printArray(double* array, int size){
-	cout<<"[";
-	for(int i=0;i<size;++i){
-		cout<<array[i]<<", ";
-	}
-	cout<<"]"<<endl;
-}
-
-void ArousalReader::initialiseArray(double* array, int size){
-	for(int i=0;i<size;++i){
-		array[i]=0.0f;
-	}
-}
-
 void ArousalReader::printArrayToFile(string file, double* array, int size){
-	ofstream ofs(file.c_str(),ios::app);
+	ofstream ofs(file.c_str());
 	for(int i=0; i<size; ++i){
-		ofs<<array[i]<<",";
+		ofs<<array[i]<<endl;
 	}
-	ofs<<endl;
+	//ofs<<endl;
+	ofs.close();
+}
+
+vector<double> getVectorFromFile(string file){
+
+	if(file.find(".cvs")>file.size()){
+		throw ArousalReader::WrongFileFormatException();
+	}
+	
+	ifstream ifs(file.c_str());
+	string line;
+	double val;
+	vector<double> result;
+
+	if (ifs.is_open()) {
+		while ( ifs.good() )
+		{
+			try {
+				getline (ifs,line);
+				val=strtod(line.c_str(),NULL);
+				result.push_back(val);
+			} catch (...) {
+				throw ArousalReader::WrongFileFormatException();
+			}
+		}
+		ifs.close();
+	} else {
+		throw ArousalReader::WrongFileFormatException();
+	}
+	return result;
 }
 
 vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){
@@ -198,26 +223,13 @@ vector<double> ArousalReader::getFrequenciesFromChannel(int channelIndex){
 		throw ArousalReader::NoDataReadException();
 	}
 
-	vector<double> temp;
-	double* freq=new double[samplingRate];
-	initialiseArray(freq, samplingRate);
+	vector<double> freq;
 
-	for(int i=0; i<_lastRawData.size(); ++i){
-		temp.push_back(_lastRawData[i][channelIndex]);
-	}
-	_postProcessingAlgorithm->process(&temp[0], freq, samplingRate);
-
-	if(_normalizationAlgorithm!=NULL){
-		double* result=new double[samplingRate];
-		_normalizationAlgorithm->process(freq, result, samplingRate);
-		delete[] freq;
-		freq=result;
+	for(unsigned int i=0; i<_lastFrequencies.size(); ++i){
+		freq.push_back(_lastFrequencies[i][channelIndex]);
 	}
 
-	temp.assign(freq, freq+samplingRate);
-
-	delete[] freq;
-	return temp;
+	return freq;
 }
 
 vector<double> ArousalReader::getRawDataFromChannel(int channelIndex){
@@ -227,7 +239,7 @@ vector<double> ArousalReader::getRawDataFromChannel(int channelIndex){
 	}
 
 	vector<double> data;
-	for(int i=0; i<_lastRawData.size(); ++i){
+	for(unsigned int i=0; i<_lastRawData.size(); ++i){
 		data.push_back(_lastRawData[i][channelIndex]);
 	}
 
@@ -240,10 +252,7 @@ vector<double> ArousalReader::getFrequenciesRangedFromChannel(int begin, int end
 	vector<double> freq = getFrequenciesFromChannel(channelIndex);
 	freqRange.assign(freq.begin()+begin, freq.begin()+end);
 
-	//normalize(&freqRange[0], freqRange.size());
-
 	freq.clear();
-	//delete &freq
 	return freqRange;
 }
 

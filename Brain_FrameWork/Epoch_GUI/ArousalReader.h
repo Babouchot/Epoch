@@ -11,6 +11,11 @@
 #include <map>
 #include "Algorithm.h"
 
+
+/*
+* The arousal reader class is the main part of the api designed to help
+* reading and processing data from the Emotiv headset
+*/
 class ArousalReader {
 
 	private :
@@ -19,6 +24,8 @@ class ArousalReader {
 		std::vector<std::vector<double> > _rawData;
 		//The last data read, format : [sampleIndex][channelIndex]
 		std::vector<std::vector<double> > _lastRawData;
+		//The last calculated frequencies
+		std::vector<std::vector<double> > _lastFrequencies;
 
 		//Emotiv required data
 		EmoEngineEventHandle eEvent;
@@ -42,9 +49,8 @@ class ArousalReader {
 		static const int startAlpha=7;//8Hz
 		static const int endAlpha=13;//13Hz
 
-		void printArray(double* array, int size);
-		void initialiseArray(double* array, int size);
-		void applyPreProcessing();
+		//Validation data
+		unsigned int _lastCounter;
 
 	public:
 
@@ -80,9 +86,14 @@ class ArousalReader {
 		bool readNextFrequencies();
 
 		/*
-		* Print the array o=into a file named string (the values will be added at the end of the file)
+		* Print the array into a file named string (the values will be added at the end of the file)
 		*/
 		void printArrayToFile(std::string file, double* array, int size);
+
+		/*
+		* Get a vector of data from a previously saved file (format .cvs)
+		*/
+		std::vector<double> getVectorFromFile(std::string file);
 
 		/*
 		* Get all the frequencies corresponding to the beta waves for the specified channel
@@ -108,11 +119,11 @@ class ArousalReader {
 		std::vector<double> getRawDataFromChannel(int channelIndex);
 		
 		/*
-		* Get all the frequencies from the begin to end parameters for the specified channel
+		* Get all the frequencies from the begin (included) to end (excluded) parameters for the specified channel
 		* the post processing algorithm is used to perform the rawdata, frequencies conversion
 		*/
 		std::vector<double> getFrequenciesRangedFromChannel(int begin, int end, int channelIndex);
-		
+
 		/*
 		* Return the map containing the name of each channel with the corresponding channel index
 		*/
@@ -137,6 +148,17 @@ class ArousalReader {
 		* Thrown when trying to get data before the first full second have bee read
 		*/
 		class NoDataReadException{};
+
+		/*
+		* Thrown when a packet is lost
+		*/
+		class PacketLostException{};
+
+		/*
+		* Thrown when trying to read an array
+		* from a file with a wrong extension
+		*/
+		class WrongFileFormatException{};
 };
 
 #endif

@@ -1,11 +1,13 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
+#include <vector>
+
 class Algorithm
 {
 	public:
 		Algorithm(){}
-		virtual void process(double* realArray, double* result, int size) = 0;
+		virtual std::vector<std::vector<double> > process(const std::vector<std::vector<double> >& data) = 0;
 		~Algorithm(){}
 };
 

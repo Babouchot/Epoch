@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>451</height>
+    <width>856</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="FFTTab">
        <attribute name="title">
@@ -36,35 +36,76 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <layout class="QHBoxLayout" name="startFreq">
-          <item>
-           <widget class="QLabel" name="labelStart">
-            <property name="text">
-             <string>Start frequency (Hz)Plot:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxStart"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="endFreq">
-          <item>
-           <widget class="QLabel" name="labelEnd">
-            <property name="text">
-             <string>End frequency (Hz):</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QSpinBox" name="spinBoxEnd"/>
-          </item>
-         </layout>
-        </item>
-        <item>
          <widget class="QCustomPlot" name="FreqCustomPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="rawTab">
+       <attribute name="title">
+        <string>Raw data</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QCustomPlot" name="rawCustomPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="histTab">
+       <attribute name="title">
+        <string>Alpha/Beta waves</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QCustomPlot" name="abHistPlot" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="logTab">
+       <attribute name="title">
+        <string>Log</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QScrollArea" name="logScrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>499</width>
+             <height>288</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QTextBrowser" name="log">
+              <property name="minimumSize">
+               <size>
+                <width>390</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>390</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="clearLogButton">
+              <property name="text">
+               <string>Clear log</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -113,17 +154,48 @@
       <item row="2" column="1">
        <widget class="QComboBox" name="channelComboBox"/>
       </item>
-      <item row="3" column="0">
+      <item row="5" column="0">
        <widget class="QPushButton" name="startAcqButton">
         <property name="text">
          <string>Start</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="5" column="1">
        <widget class="QPushButton" name="StopAcqButton">
         <property name="text">
          <string>Stop</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QSpinBox" name="spinBoxEnd">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>64</number>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="labelEnd">
+        <property name="text">
+         <string>End frequency (Hz):</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="spinBoxStart">
+        <property name="maximum">
+         <number>63</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="labelStart">
+        <property name="text">
+         <string>Start frequency (Hz):</string>
         </property>
        </widget>
       </item>
@@ -136,7 +208,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>888</width>
+     <width>856</width>
      <height>25</height>
     </rect>
    </property>
@@ -145,7 +217,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
-    <addaction name="actionSave_configuration_as"/>
+    <addaction name="actionSave"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_window"/>
     <addaction name="separator"/>
@@ -163,12 +235,12 @@
   </widget>
   <action name="actionOpen">
    <property name="text">
-    <string>Open configuration</string>
+    <string>Open acquisition</string>
    </property>
   </action>
-  <action name="actionSave_configuration_as">
+  <action name="actionSave">
    <property name="text">
-    <string>Save configuration as</string>
+    <string>Save acquisition as</string>
    </property>
   </action>
   <action name="actionOpen_window">
