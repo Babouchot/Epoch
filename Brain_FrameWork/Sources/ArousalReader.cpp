@@ -1,4 +1,5 @@
 #include "ArousalReader.h"
+#include <unistd.h>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -158,6 +159,9 @@ bool ArousalReader::readNextFrequencies(){
 			delete[] currentSample;
 		}
 	}
+
+	usleep(1000/150);
+
 	return false;
 }
 
@@ -167,6 +171,7 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 		ofs<<array[i]<<",";
 	}
 	ofs<<endl;
+	ofs.close();
 }
 
 vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){

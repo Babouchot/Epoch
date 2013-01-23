@@ -1,5 +1,4 @@
 #include <iostream>
-#include <unistd.h>
 #include "ArousalReader.h"
 #include <sstream>
 
@@ -33,7 +32,6 @@ int main(){
 		} catch (ArousalReader::PacketLostException loss) {
 			cout<<"Packet Lost \n";
 		}
-
 	}
 	ar.endReading();
 	return 0;
