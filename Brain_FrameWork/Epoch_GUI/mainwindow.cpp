@@ -63,9 +63,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete bars;
-    for (int i = 0; i <= daughters.size(); ++i) {
-        delete daughters[i];
-    }
 }
 
 void MainWindow::on_actionQuit_triggered()
@@ -159,14 +156,19 @@ void MainWindow::updateGraphs() {
             newValue += amplitudes[i];
         }
 
-        /*
-        if (rawDataVector.size() > 5*128) {
+        //count the number of raw sample read
+        static int rawCounter(0);
+
+        
+        if (rawDataVector.size() > 4*128) {
             rawDataVector.erase(rawDataVector.begin(),rawDataVector.begin()+128);
             xRawDataVector.erase(xRawDataVector.begin(),xRawDataVector.begin()+128);
-        }*/
+        }
+
         for (int i = 0; i < rawData.size(); ++i) {
             rawDataVector.push_back(rawData[i]);
-            xRawDataVector.push_back(xRawDataVector.size());
+            xRawDataVector.push_back(rawCounter);
+            ++rawCounter;
         }
 
         xPositions.push_back(xPositions.size());
