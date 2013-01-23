@@ -4,8 +4,8 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include "ui_mainwindow.h"
-#include "ArousalReader.h"
-#include "fft.h"
+#include "../Acquisition/ArousalReader.h"
+#include "../Acquisition/fft.h"
 
 namespace Ui {
 class MainWindow;

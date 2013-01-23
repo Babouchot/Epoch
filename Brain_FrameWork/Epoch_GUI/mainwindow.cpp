@@ -1,8 +1,8 @@
 #include <QFileDialog>
 #include <cstdlib>
 #include "mainwindow.h"
-#include "ArousalReader.h"
-#include "fft.h"
+#include "../Acquisition/ArousalReader.h"
+#include "../Acquisition/fft.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

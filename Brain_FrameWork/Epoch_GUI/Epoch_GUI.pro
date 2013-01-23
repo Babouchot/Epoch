@@ -9,26 +9,22 @@ QT       += core gui
 TARGET = Epoch_GUI
 TEMPLATE = app
 
-LIBS += /home/maureill/Bureau/Projet_Epoch/Epoch/Brain_FrameWork/Epoch_GUI/libedk.so.1
+LIBS += ../lib/libedk.so.1
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     qcustomplot.cpp \
-    fft.cpp \
-    ArousalReader.cpp
+    ../Acquisition/fft.cpp \
+    ../Acquisition/ArousalReader.cpp
 
 HEADERS  += mainwindow.h \
     qcustomplot.h \
-    Normalization.h \
-    fft.h \
-    EmoStateDLL.h \
-    edkErrorCode.h \
-    edk.h \
-    ArousalReader.h \
-    Algorithm.h
+    ../Acquisition/Normalization.h \
+    ../Acquisition/fft.h \
+    ../Acquisition/EmoStateDLL.h \
+    ../Acquisition/edkErrorCode.h \
+    ../Acquisition/edk.h \
+    ../Acquisition/ArousalReader.h \
+    ../Acquisition/Algorithm.h
 
 FORMS    += mainwindow.ui
-
-OTHER_FILES += \
-    libedk_utils.so \
-    libedk.so.1
