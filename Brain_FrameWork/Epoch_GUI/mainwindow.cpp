@@ -273,11 +273,16 @@ void MainWindow::reset(bool modif) {
 }
 
 void MainWindow::saveAcquisition() {
-    QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save acquisition as"),tr("../"));
+    std::string file = saveFile.toStdString();
+    if (file.find('.') > file.size()) {
+        file += ".cvs";
+    }
+    reader.printArrayToFile(file, &yPositions[0], yPositions.size());
 }
 
 void MainWindow::loadAcquisition() {
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save acquisition as"),tr("../"));
+    QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
 }
 
 void MainWindow::on_spinBoxStart_valueChanged(int arg1)
