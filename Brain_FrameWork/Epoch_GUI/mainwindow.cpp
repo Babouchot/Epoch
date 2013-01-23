@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <cstdlib>
 #include "mainwindow.h"
 #include "ArousalReader.h"
 #include "fft.h"
@@ -352,7 +353,23 @@ void MainWindow::on_addGameButton_clicked()
 
 void MainWindow::on_StartGameButton_clicked()
 {
-    if (fork) {
-        execl(games[ui->gameComboBox->currentIndex()].c_str(), games[ui->gameComboBox->currentIndex()].c_str(), NULL);
+    std::cout<<games[ui->gameComboBox->currentIndex()].c_str()<<std::endl;
+
+    std::string cmd,path;
+    cmd+="(cd ";
+    path=games[ui->gameComboBox->currentIndex()];
+    int i=path.rfind("/");
+    path=path.substr(0,i);
+    std::cout<<path<<std::endl;
+    cmd+=path;
+    cmd+="; ";
+    //std::system(cmd.c_str());
+    cmd+=games[ui->gameComboBox->currentIndex()];
+    cmd+=")";
+
+
+    if (fork()) {
+        std::system(cmd.c_str());
     }
+
 }
