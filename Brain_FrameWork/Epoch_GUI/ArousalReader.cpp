@@ -27,23 +27,41 @@ unsigned int channelSize(){
 
 /////////////////member functions//////////////////
 
-ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) : 
-						_postProcessingAlgorithm(postProcess),
-						_preProcessingAlgorithm(preProcess),
-						_normalizationAlgorithm(NULL),
-						_readyToCollect(false),
-						secs(0), userID(0), _lastCounter(0) {
+ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess) 
+: 
+_rawData(),
+_lastRawData(),
+_lastFrequencies(),
+eEvent(),
+eState(),
+hData(),
+secs(0),
+userID(0),
+_readyToCollect(false),
+_postProcessingAlgorithm(postProcess),
+_preProcessingAlgorithm(preProcess),
+_normalizationAlgorithm(NULL),
+_lastCounter(0) 
+{
 	if(_channelList.size()==0){
 		initialiseChannelList();
 	}
 }
 
 ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algorithm* normalize) : 
-						_postProcessingAlgorithm(postProcess),
-						_preProcessingAlgorithm(preProcess),
-						_normalizationAlgorithm(normalize),
-						_readyToCollect(false),
-						secs(0), userID(0), _lastCounter(0)  {
+_rawData(),
+_lastRawData(),
+_lastFrequencies(),
+eEvent(),
+eState(),
+hData(),
+secs(0),
+userID(0),
+_readyToCollect(false),
+_postProcessingAlgorithm(postProcess),
+_preProcessingAlgorithm(preProcess),
+_normalizationAlgorithm(normalize),
+_lastCounter(0)   {
 	if(_channelList.size()==0){
 		initialiseChannelList();
 	}
@@ -52,8 +70,6 @@ ArousalReader::ArousalReader(Algorithm* postProcess, Algorithm* preProcess, Algo
 ArousalReader::~ArousalReader(){
 	_rawData.clear();
 	_lastRawData.clear();
-	//delete &_rawData;
-	//delete &_lastRawData;
 }
 
 void ArousalReader::initialiseReading(){
@@ -73,8 +89,6 @@ void ArousalReader::initialiseReading(){
 
     hData = EE_DataCreate();
 	EE_DataSetBufferSizeInSec(secs);
-
-	cout<<"reading initialise"<<endl;
 }
 
 void ArousalReader::endReading(){
@@ -97,7 +111,6 @@ bool ArousalReader::readNextFrequencies(){
 		if (eventType == EE_UserAdded) {
 			EE_DataAcquisitionEnable(userID,true);
 			_readyToCollect = true;
-			cout<<"Ready to collect set to true"<<endl;
 		}
 	}
 
@@ -132,12 +145,8 @@ bool ArousalReader::readNextFrequencies(){
 					throw PacketLostException();
 				}
 
+				//Set the value of the last counter value to the counter value when a packet is complete
 				_lastCounter=_rawData[_rawData.size()-1][0];
-
-				
-				for(int i=0; i<_rawData.size(); ++i){
-					cout<<"time stamp "<<_rawData[i][17]<<"\n";
-				}
 				
 				//set the new _lastRawData
 				_lastRawData.clear();
@@ -175,7 +184,6 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 	for(int i=0; i<size; ++i){
 		ofs<<array[i]<<endl;
 	}
-	//ofs<<endl;
 	ofs.close();
 }
 

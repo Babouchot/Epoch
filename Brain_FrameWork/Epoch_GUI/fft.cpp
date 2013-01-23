@@ -72,7 +72,7 @@ void FFT::printReIm(double re[], double im[]) {
  ****************************************************************/
 void FFT::fft(double x[], double y[]) {
   int i,j,k,n1,n2,a;
-  double c,s,e,t1,t2;
+  double c,s,t1,t2;
    
    
   // Bit-reverse
@@ -130,9 +130,9 @@ vector<vector<double> > FFT::process(const vector<vector<double> >& data){
   double* result=new double[data.size()];
   int size=closestTwoPower(data.size());
 
-  for(int chan=0; chan<data[0].size(); ++chan){
+  for(unsigned int chan=0; chan<data[0].size(); ++chan){
 
-    for(int i=0; i<data.size(); ++i){
+    for(unsigned int i=0; i<data.size(); ++i){
       temp[i]=data[i][chan];
     }
 

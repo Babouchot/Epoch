@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QCustomPlot* rawPlot = ui->rawCustomPlot;
     rawPlot->addGraph();
     rawPlot->replot();
-    rawPlot->xAxis->setLabel("time (seconds)");
+    rawPlot->xAxis->setLabel("number of sample");
     rawPlot->yAxis->setLabel("raw signal");
 
     QCustomPlot* abPlot = ui->abHistPlot;
