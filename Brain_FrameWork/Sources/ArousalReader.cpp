@@ -176,15 +176,15 @@ void ArousalReader::printArrayToFile(string file, double* array, int size){
 	ofs.close();
 }
 
-vector<double> getVectorFromFile(string file){
+vector<double> ArousalReader::getVectorFromFile(string file){
 
 	if(file.find(".cvs")>file.size()){
 		throw ArousalReader::WrongFileFormatException();
 	}
-	
+	cout<<"test1\n"<<file<<endl;
 	ifstream ifs(file.c_str());
 	string line;
-	double val;
+	double val(0);
 	vector<double> result;
 
 	if (ifs.is_open()) {

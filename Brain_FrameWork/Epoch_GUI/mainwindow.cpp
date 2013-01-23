@@ -6,7 +6,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    reader(new FFT())
+    reader(new FFT()),
+    yPositions(),
+    xPositions()
 {
     ui->setupUi(this);
     acquisition = false;
@@ -285,7 +287,22 @@ void MainWindow::loadAcquisition() {
     QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
     std::string file = openFile.toStdString();
     try {
+        xPositions.clear();
+        yPositions.clear();
+
         yPositions = reader.getVectorFromFile(file);
+
+        QVector<double> x(yPositions.size()-1);
+        QVector<double> y(yPositions.size()-1);
+
+        for (int i = 0; i < yPositions.size()-1; ++i) {
+            xPositions.push_back(i);
+            x[i] = xPositions[i];
+            y[i] = yPositions[i];
+        }
+
+        ui->FreqCustomPlot->graph(0)->setData(x, y);
+        ui->FreqCustomPlot->rescaleAxes();
         ui->FreqCustomPlot->replot();
     }
     catch (ArousalReader::WrongFileFormatException e) {
@@ -317,10 +334,10 @@ void MainWindow::on_clearLogButton_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    saveAcquisition();
+    loadAcquisition();
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    loadAcquisition();
+    saveAcquisition();
 }
