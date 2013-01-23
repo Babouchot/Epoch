@@ -11,6 +11,11 @@
 #include <map>
 #include "Algorithm.h"
 
+
+/*
+* The arousal reader class is the main part of the api designed to help
+* reading and processing data from the Emotiv headset
+*/
 class ArousalReader {
 
 	private :
@@ -81,9 +86,14 @@ class ArousalReader {
 		bool readNextFrequencies();
 
 		/*
-		* Print the array o=into a file named string (the values will be added at the end of the file)
+		* Print the array into a file named string (the values will be added at the end of the file)
 		*/
 		void printArrayToFile(std::string file, double* array, int size);
+
+		/*
+		* Get a vector of data from a previously saved file (format .cvs)
+		*/
+		std::vector<double> getVectorFromFile(std::string file);
 
 		/*
 		* Get all the frequencies corresponding to the beta waves for the specified channel
@@ -113,7 +123,7 @@ class ArousalReader {
 		* the post processing algorithm is used to perform the rawdata, frequencies conversion
 		*/
 		std::vector<double> getFrequenciesRangedFromChannel(int begin, int end, int channelIndex);
-		
+
 		/*
 		* Return the map containing the name of each channel with the corresponding channel index
 		*/
@@ -143,6 +153,12 @@ class ArousalReader {
 		* Thrown when a packet is lost
 		*/
 		class PacketLostException{};
+
+		/*
+		* Thrown when trying to read an array
+		* from a file with a wrong extension
+		*/
+		class WrongFileFormatException{};
 };
 
 #endif

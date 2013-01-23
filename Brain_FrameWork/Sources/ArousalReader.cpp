@@ -1,5 +1,7 @@
 #include "ArousalReader.h"
 #include <unistd.h>
+#include <cstdlib>
+#include <string>
 #include <cmath>
 #include <iostream>
 #include <sstream>
@@ -166,12 +168,41 @@ bool ArousalReader::readNextFrequencies(){
 }
 
 void ArousalReader::printArrayToFile(string file, double* array, int size){
-	ofstream ofs(file.c_str(),ios::app);
+	ofstream ofs(file.c_str());
 	for(int i=0; i<size; ++i){
-		ofs<<array[i]<<",";
+		ofs<<array[i]<<endl;
 	}
-	ofs<<endl;
+	//ofs<<endl;
 	ofs.close();
+}
+
+vector<double> getVectorFromFile(string file){
+
+	if(file.find(".cvs")>file.size()){
+		throw ArousalReader::WrongFileFormatException();
+	}
+	
+	ifstream ifs(file.c_str());
+	string line;
+	double val;
+	vector<double> result;
+
+	if (ifs.is_open()) {
+		while ( ifs.good() )
+		{
+			try {
+				getline (ifs,line);
+				val=strtod(line.c_str(),NULL);
+				result.push_back(val);
+			} catch (...) {
+				throw ArousalReader::WrongFileFormatException();
+			}
+		}
+		ifs.close();
+	} else {
+		throw ArousalReader::WrongFileFormatException();
+	}
+	return result;
 }
 
 vector<double> ArousalReader::getBetaWavesFromChannel(int channelIndex){

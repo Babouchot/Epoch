@@ -91,6 +91,11 @@ class ArousalReader {
 		void printArrayToFile(std::string file, double* array, int size);
 
 		/*
+		* Get a vector of data from a previously saved file (format .cvs)
+		*/
+		std::vector<double> getVectorFromFile(std::string file);
+
+		/*
 		* Get all the frequencies corresponding to the beta waves for the specified channel
 		* the post processing algorithm is used to perform the rawdata, frequencies conversion
 		*/
@@ -148,6 +153,12 @@ class ArousalReader {
 		* Thrown when a packet is lost
 		*/
 		class PacketLostException{};
+
+		/*
+		* Thrown when trying to read an array
+		* from a file with a wrong extension
+		*/
+		class WrongFileFormatException{};
 };
 
 #endif
