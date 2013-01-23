@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 #include "ui_mainwindow.h"
 #include "ArousalReader.h"
 #include "fft.h"
@@ -57,6 +58,8 @@ private:
     bool acquisition;
     void updateGraphs();
     void renderSpinners();
+    void saveAcquisition();
+    void loadAcquisition();
 };
 
 #endif // MAINWINDOW_H

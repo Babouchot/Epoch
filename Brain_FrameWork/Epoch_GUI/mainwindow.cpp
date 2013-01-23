@@ -120,6 +120,14 @@ void MainWindow::on_StopAcqButton_clicked()
         reader.endReading();
         acquisition = false;
         ui->log->append("reading stopped");
+        bool save = QMessageBox::information( this, "Save Acquisition ?",
+                                              "Do you want to save this acquisition ?",
+                                              "No", "Save Now",
+                                              0, 1 );
+        if (save) {
+            saveAcquisition();
+            ui->log->append("Acquisition saved");
+        }
     }
     else {
         ui->log->append("No process running");
@@ -262,6 +270,14 @@ void MainWindow::reset(bool modif) {
     xRawDataVector.clear();
 }
 
+void MainWindow::saveAcquisition() {
+    QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
+}
+
+void MainWindow::loadAcquisition() {
+    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save acquisition as"),tr("../"));
+}
+
 void MainWindow::on_spinBoxStart_valueChanged(int arg1)
 {
     reset(true);
@@ -284,10 +300,10 @@ void MainWindow::on_clearLogButton_clicked()
 
 void MainWindow::on_actionOpen_triggered()
 {
-    QString openFile = QFileDialog::getOpenFileName(this, tr("Open acquisition file"),tr("../"));
+    saveAcquisition();
 }
 
 void MainWindow::on_actionSave_triggered()
 {
-    QString saveFile = QFileDialog::getSaveFileName(this, tr("Save acquisition as"),tr("../"));
+    loadAcquisition();
 }
