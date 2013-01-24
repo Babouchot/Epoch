@@ -1,9 +1,0 @@
-
-
-TODO :
-
-	- Character animation and blocking out
-	- Graphical display
-	- Graphical design
-	- Level integration
-	- Helmet integration
