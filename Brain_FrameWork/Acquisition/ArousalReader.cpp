@@ -143,6 +143,7 @@ bool ArousalReader::readNextFrequencies(){
 				if(_lastCounter!=0 && _rawData[_rawData.size()-1][0]!=_lastCounter-1) {
 					//packet loss treatment
 					_rawData.clear();
+					_lastCounter=0;
 					throw PacketLostException();
 				}
 
