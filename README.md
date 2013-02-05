@@ -9,22 +9,22 @@ DEMONSTRATION :
 INSTALL:
   Ubuntu 32bits (for EDK)
 	Pong :
-		• Dependencies :
-			– SDL dev
-			– SDL gfx
-			– OpenGL dev
-			– Freeglut dev
-		• Compiling : 
-			- ~/Pong/V1.3 make -f makefile.linux
+                • Dependencies :
+                   – SDL dev
+                   - SDL gfx
+                   – OpenGL dev
+                   – Freeglut dev
+                • Compiling : 
+                   - ~/Pong/V1.3 make -f makefile.linux
 	Framework :
-		• Dependencies :
-			– EDK
-		• Copy file :
-			– move EDK libraries into the file Brain_Framework/lib/
+                • Dependencies :
+                   – EDK
+                • Copy file :
+                   – move EDK libraries into the file Brain_Framework/lib/
 	Interface :
-		• Dependencies :
-			– QT4 dev
-		• Compiling :
+                • Dependencies :
+                   – QT4 dev
+                • Compiling :
 			– ~/Brain_Framework/Epoch_GUI qmake;
 			– ~/Brain_Framework/Epoch_GUI make;
 
