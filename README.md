@@ -28,10 +28,10 @@ Interface :
                 • Compiling :
 			– ~/Brain_Framework/Epoch_GUI qmake;
 			– ~/Brain_Framework/Epoch_GUI make;
-
+</pre>
 MORE DETAIL :
 	https://github.com/Babouchot/Epoch
-
+<pre>
 
                 o o"o"o"o"o"ooo o
            o M Mo"oM M Mo"o"o"o"o"ooo
