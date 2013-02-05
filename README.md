@@ -7,7 +7,7 @@ DEMONSTRATION :
 	https://www.dropbox.com/sh/pisc6kuynwvk41i/7BGhJ1biCq/presentation.mpg
 
 INSTALL:
-  Ubuntu 32bits (for EDK)
+ Ubuntu 32bits (for EDK)
    Pong :
     • Dependencies :
 	– SDL dev
