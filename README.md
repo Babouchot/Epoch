@@ -8,8 +8,8 @@ DEMONSTRATION :
 
 INSTALL:
   Ubuntu 32bits (for EDK)
-	Pong :
-	• Dependencies :
+   Pong :
+    • Dependencies :
 	– SDL dev
 	- SDL gfx
 	– OpenGL dev
