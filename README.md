@@ -6,6 +6,7 @@ This projet is a framework, which aim to analyse user's brain waves with the emo
 DEMONSTRATION : 
 	https://www.dropbox.com/sh/pisc6kuynwvk41i/7BGhJ1biCq/presentation.mpg
 
+<pre>
 INSTALL:
 Ubuntu 32bits (for EDK)
 Pong :
@@ -60,3 +61,4 @@ M M M"o"M M M"o"oM Mo"o"o"M M"o"o"oM M M"o"
     ""o"oo
 
 
+</pre>
