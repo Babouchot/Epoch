@@ -6,29 +6,34 @@ This projet is a framework, which aim to analyse user's brain waves with the emo
 DEMONSTRATION : 
 	https://www.dropbox.com/sh/pisc6kuynwvk41i/7BGhJ1biCq/presentation.mpg
 
-<pre>
 INSTALL:
 Ubuntu 32bits (for EDK)
-Pong :
-    • Dependencies :
-	– SDL dev
+
+1.Pong :
++ Dependencies :	
+	- SDL dev
 	- SDL gfx
-	– OpenGL dev
-	– Freeglut dev
-	• Compiling : 
-                   - ~/Pong/V1.3 make -f makefile.linux
-Framework :
-                • Dependencies :
-                   – EDK
-                • Copy file :
-                   – move EDK libraries into the file Brain_Framework/lib/
-Interface :
-                • Dependencies :
-                   – QT4 dev
-                • Compiling :
-			– ~/Brain_Framework/Epoch_GUI qmake;
-			– ~/Brain_Framework/Epoch_GUI make;
-</pre>
+	- OpenGL dev
+	- Freeglut dev
++ Compiling : ~/Pong/V1.3 make -f makefile.linux
+     
+
+
+2.Framework :
++ Dependencies :	- EDK
++ Copy file :	move EDK libraries into the file Brain_Framework/lib/
+
+
+
+3.Interface :
++ Dependencies :	- QT4 dev
++ Compiling :	
+	- ~/Brain_Framework/Epoch_GUI qmake;
+	- ~/Brain_Framework/Epoch_GUI make;
+
+
+
+
 MORE DETAIL :
 	https://github.com/Babouchot/Epoch
 <pre>
