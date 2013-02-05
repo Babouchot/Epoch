@@ -8,14 +8,14 @@ DEMONSTRATION :
 
 INSTALL:
  Ubuntu 32bits (for EDK)
-   Pong :
-    • Dependencies :
-	– SDL dev
-	- SDL gfx
-	– OpenGL dev
-	– Freeglut dev
-	• Compiling : 
-                   - ~/Pong/V1.3 make -f makefile.linux
+   	Pong :
+   		 • Dependencies :
+		   – SDL dev
+		   – SDL gfx
+		   – OpenGL dev
+		   – Freeglut dev
+		• Compiling : 
+                   – ~/Pong/V1.3 make -f makefile.linux
 	Framework :
                 • Dependencies :
                    – EDK
@@ -25,8 +25,8 @@ INSTALL:
                 • Dependencies :
                    – QT4 dev
                 • Compiling :
-			– ~/Brain_Framework/Epoch_GUI qmake;
-			– ~/Brain_Framework/Epoch_GUI make;
+		   – ~/Brain_Framework/Epoch_GUI qmake;
+		   – ~/Brain_Framework/Epoch_GUI make;
 
 MORE DETAIL :
 	https://github.com/Babouchot/Epoch
