@@ -9,12 +9,12 @@ DEMONSTRATION :
 INSTALL:
   Ubuntu 32bits (for EDK)
 	Pong :
-                • Dependencies :
-                   – SDL dev
-                   - SDL gfx
-                   – OpenGL dev
-                   – Freeglut dev
-                • Compiling : 
+	• Dependencies :
+	– SDL dev
+	- SDL gfx
+	– OpenGL dev
+	– Freeglut dev
+	• Compiling : 
                    - ~/Pong/V1.3 make -f makefile.linux
 	Framework :
                 • Dependencies :
