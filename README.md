@@ -7,8 +7,8 @@ DEMONSTRATION :
 	https://www.dropbox.com/sh/pisc6kuynwvk41i/7BGhJ1biCq/presentation.mpg
 
 INSTALL:
- Ubuntu 32bits (for EDK)
-   Pong :
+Ubuntu 32bits (for EDK)
+Pong :
     • Dependencies :
 	– SDL dev
 	- SDL gfx
@@ -16,12 +16,12 @@ INSTALL:
 	– Freeglut dev
 	• Compiling : 
                    - ~/Pong/V1.3 make -f makefile.linux
-	Framework :
+Framework :
                 • Dependencies :
                    – EDK
                 • Copy file :
                    – move EDK libraries into the file Brain_Framework/lib/
-	Interface :
+Interface :
                 • Dependencies :
                    – QT4 dev
                 • Compiling :
