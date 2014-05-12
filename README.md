@@ -34,7 +34,7 @@ Ubuntu 32bits (for EDK)
 
 
 
-MORE DETAIL :
+more details :
 	https://github.com/Babouchot/Epoch
 <pre>
 
